@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Requisitos & UML — Prova</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f6;--paper:#fff;--ink:#14213d;--muted:#5c6780;--line:#d5dbe6;--acc:#2f5bea;--acc-soft:#e3eaff;--warm:#ff7a45;--ok:#13804f;--ok-bg:#e1f5ea;--bad:#c2332b;--bad-bg:#fde5e3;--code:#f3f5f9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.6 Inter,system-ui,sans-serif}
+code,.mono{font-family:"JetBrains Mono",Consolas,monospace;font-size:.9em}
+code{background:var(--code);padding:1px 5px;border-radius:4px}
+nav.top{position:sticky;top:0;z-index:20;background:var(--ink)}
+nav.top .in{max-width:1180px;margin:auto;display:flex;gap:4px;align-items:center;padding:8px 16px;overflow-x:auto}
+nav.top b{font-family:"Bricolage Grotesque";color:#fff;font-size:19px;margin-right:14px;white-space:nowrap}
+nav.top a{color:#d9e0f2;text-decoration:none;font-size:14px;padding:6px 10px;border-radius:6px;white-space:nowrap}
+nav.top a:hover{background:#ffffff1c;color:#fff}
+.wrap{max-width:1180px;margin:auto;padding:0 16px}
+.hero{padding:44px 0 20px}
+.hero h1{font-family:"Bricolage Grotesque";font-weight:800;font-size:clamp(34px,6vw,62px);line-height:1;margin:0 0 12px;letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--acc)}
+.hero p{color:var(--muted);max-width:700px;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{background:var(--paper);border:1px solid var(--line);border-radius:99px;padding:4px 12px;font-size:13px}
+section{padding:30px 0;border-top:1px solid var(--line)}
+h2{font-family:"Bricolage Grotesque";font-size:32px;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.card h3{margin:0 0 6px;font-size:17px}
+.card p,.card li{font-size:14.5px}
+.card ul{padding-left:18px;margin:6px 0}
+.tag{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--warm)}
+.ex{background:var(--code);border-left:3px solid var(--acc);border-radius:0 8px 8px 0;padding:8px 12px;font-size:14px;margin:8px 0}
+.warn{background:#fff3ea;border-left:3px solid var(--warm);border-radius:0 8px 8px 0;padding:8px 12px;font-size:14px;margin:8px 0}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t td,table.t th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+table.t th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+svg.mini{width:100%;height:auto;background:#fafbfd;border:1px solid var(--line);border-radius:8px;margin:6px 0}
+/* editor */
+.editor{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ed-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px;border-bottom:1px solid var(--line);background:#f8f9fc}
+.ed-top select{font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.btn{font:inherit;font-size:13.5px;font-weight:500;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--acc)}
+.btn.pri{background:var(--acc);color:#fff;border-color:var(--acc)}
+.btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.warm{background:var(--warm);border-color:var(--warm);color:#fff}
+.ed-body{display:grid;grid-template-columns:200px minmax(0,1fr) 250px}
+@media(max-width:980px){.ed-body{grid-template-columns:1fr}}
+.pal{padding:12px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.pal h4,.props h4{margin:6px 0 2px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.pal .btn{text-align:left}
+.canvas-wrap{position:relative;background:#fbfcfe;background-image:radial-gradient(#d9dfeb 1px,transparent 1px);background-size:18px 18px;min-height:420px}
+svg#cv{width:100%;height:auto;display:block;touch-action:none;user-select:none}
+.hint{position:absolute;left:10px;bottom:8px;font-size:12.5px;color:var(--muted);background:#ffffffd9;padding:3px 8px;border-radius:6px;max-width:95%}
+.props{padding:12px;border-left:1px solid var(--line);font-size:14px}
+.props label{display:block;font-size:12.5px;color:var(--muted);margin-top:8px}
+.props input,.props textarea,.props select{width:100%;font:inherit;font-size:13.5px;padding:6px 8px;border:1px solid var(--line);border-radius:7px}
+.props textarea{font-family:"JetBrains Mono";font-size:12.5px;min-height:70px}
+.task{padding:12px 14px;border-bottom:1px solid var(--line);font-size:14.5px;background:#fff}
+.task b{color:var(--acc)}
+.report{padding:12px 14px;border-top:1px solid var(--line);font-size:14px;display:none}
+.report .ok{color:var(--ok)} .report .no{color:var(--bad)}
+.report ul{margin:6px 0;padding-left:18px}
+/* classificador */
+.cls{display:grid;gap:8px}
+.st{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.st span.txt{flex:1;min-width:220px;font-size:14.5px}
+.st.right{border-color:var(--ok);background:var(--ok-bg)} .st.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.st small{display:block;width:100%;color:var(--muted)}
+/* quiz */
+.qbar{position:sticky;top:46px;z-index:10;background:var(--ink);color:#fff;border-radius:10px;padding:9px 14px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.qbar select{font:inherit;font-size:13px;border-radius:6px;padding:4px 6px}
+.qbar .pb{flex:1;min-width:100px;height:7px;background:#ffffff30;border-radius:8px;overflow:hidden}
+.qbar .pb i{display:block;height:100%;width:0;background:var(--warm);transition:width .3s}
+.q{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 12px}
+.q .meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.04em}
+.q .tx{margin:6px 0 10px;font-weight:500}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin:6px 0;cursor:pointer;font-size:14.5px}
+.opt:hover{border-color:var(--ink)}
+.opt .x{flex:none;width:21px;height:21px;border:2px solid var(--ink);border-radius:4px;display:grid;place-items:center;font-weight:800;font-size:13px}
+.opt.pick .x::after{content:"X"}
+.opt.right{background:var(--ok-bg);border-color:var(--ok)} .opt.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.q .fb{display:none;margin-top:8px;padding:8px 12px;border-radius:8px;background:var(--code);font-size:14px}
+.q.done .fb{display:block}
+footer{color:var(--muted);font-size:13px;padding:30px 0 60px}
+/* print */
+body.print{background:#fff;font-size:12.5px}
+body.print nav.top,body.print .noprint,body.print .qbar{display:none!important}
+body.print .card,body.print .q,body.print .solbox{break-inside:avoid}
+body.print section{padding:14px 0}
+body.print .q .fb{display:block}
+.solbox{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+.solbox h3{margin:0 0 4px;font-size:16px}
+</style>
+</head>
+<body>
+<nav class="top"><div class="in">
+  <b>Requisitos &amp; UML</b>
+  <a href="#req">Tipos de requisitos</a><a href="#uc">Casos de uso</a><a href="#cl">Classes</a><a href="#est">Estados</a><a href="#montar">Montar diagramas</a><a href="#classif">Classificar</a><a href="#quiz">Questões</a>
+</div></nav>
+
+<div class="wrap">
+<div class="hero">
+  <h1>Engenharia de Requisitos<br>e <em>modelagem UML</em>.</h1>
+  <p>Tudo da prova de 24/11: <b>tipos de requisitos</b>, <b>modelagem de casos de uso</b>, <b>modelagem de classes</b> e <b>modelagem de estados</b>. Leia a teoria, monte os diagramas no editor (ele corrige para você) e faça as questões de marcar X.</p>
+  <div class="chips noprint" id="chips"></div>
+</div>
+
+<!-- =================== TIPOS DE REQUISITOS =================== -->
+<section id="req">
+<h2>1. Tipos de requisitos</h2>
+<p class="sub">Requisito = descrição do que o sistema deve fazer (serviços) e das restrições sob as quais deve operar.</p>
+<div class="grid">
+<div class="card"><span class="tag">a divisão principal</span><h3>Funcionais × Não funcionais</h3>
+<p><b>Funcional (RF):</b> o que o sistema <b>faz</b> — serviços, reações a entradas, comportamento em situações específicas.</p>
+<div class="ex">RF01 – O sistema deve permitir que o cliente emita a 2ª via do boleto.</div>
+<p><b>Não funcional (RNF):</b> <b>como</b> o sistema deve ser / restrições de qualidade: desempenho, segurança, usabilidade, confiabilidade, portabilidade…</p>
+<div class="ex">RNF01 – 95% das consultas devem responder em até 2 segundos.</div>
+<div class="warn">Truque: se der para escrever como "o usuário pode <i>fazer X</i>", é RF. Se fala de <i>quão rápido / seguro / fácil / disponível</i>, é RNF.</div></div>
+
+<div class="card"><span class="tag">sommerville</span><h3>Classificação dos RNF</h3>
+<table class="t"><tr><th>Tipo</th><th>Exemplos</th></tr>
+<tr><td><b>De produto</b></td><td>Desempenho, eficiência, usabilidade, confiabilidade, segurança, portabilidade, espaço</td></tr>
+<tr><td><b>Organizacionais</b></td><td>Processo e padrões da empresa: linguagem obrigatória, metodologia, prazo de entrega, ambiente operacional</td></tr>
+<tr><td><b>Externos</b></td><td>Legais (LGPD), éticos, regulatórios, interoperabilidade com sistemas de terceiros</td></tr></table></div>
+
+<div class="card"><span class="tag">níveis</span><h3>Requisitos de usuário × de sistema</h3>
+<p><b>De usuário:</b> linguagem natural + diagramas, alto nível, para clientes e gestores.</p>
+<p><b>De sistema:</b> descrição detalhada e precisa (funções, serviços, restrições), base do contrato e do projeto; para desenvolvedores.</p>
+<div class="ex">Usuário: "O sistema deve gerar relatório mensal de vendas."<br>Sistema: "No último dia útil do mês, às 23h, o sistema deve gerar PDF com total por vendedor, filtrado por loja, e enviá-lo ao e-mail do gerente."</div></div>
+
+<div class="card"><span class="tag">outros tipos</span><h3>Domínio, regras de negócio e restrições</h3>
+<ul>
+<li><b>Requisitos de domínio:</b> vêm do domínio da aplicação (leis, cálculos, terminologia da área). Ex.: "o cálculo do INSS segue a tabela progressiva vigente".</li>
+<li><b>Regras de negócio:</b> políticas da organização. Ex.: "aluno com 3 livros emprestados não pode pegar outro".</li>
+<li><b>Restrições (de projeto/implementação):</b> limitam a solução. Ex.: "deve usar PostgreSQL".</li>
+<li><b>Requisitos inversos:</b> o que o sistema <b>não</b> deve fazer. Ex.: "não deve armazenar o CVV do cartão".</li>
+</ul></div>
+
+<div class="card"><span class="tag">qualidade</span><h3>Características de um bom requisito</h3>
+<ul>
+<li><b>Correto</b> e <b>necessário</b></li>
+<li><b>Não ambíguo</b> — uma única interpretação</li>
+<li><b>Verificável / testável</b> — dá para medir</li>
+<li><b>Completo</b>, <b>consistente</b> (não contradiz outro)</li>
+<li><b>Rastreável</b> — origem e impacto conhecidos (ID único)</li>
+<li><b>Priorizado</b> e <b>viável</b></li>
+</ul>
+<div class="warn">"O sistema deve ser fácil de usar" ✗ (não verificável) → "Um usuário novo deve concluir uma compra em até 3 minutos sem ajuda, em 90% dos testes" ✓</div></div>
+
+<div class="card"><span class="tag">modelos</span><h3>FURPS+ e ISO/IEC 25010</h3>
+<p><b>FURPS+</b>: <b>F</b>uncionalidade, <b>U</b>sabilidade, <b>R</b>eliability (confiabilidade), <b>P</b>erformance (desempenho), <b>S</b>uportabilidade (manutenção) + restrições (projeto, implementação, interface, físicas).</p>
+<p><b>ISO 25010</b>: adequação funcional, eficiência de desempenho, compatibilidade, usabilidade, confiabilidade, segurança, manutenibilidade, portabilidade.</p>
+<p>Processo: <b>elicitação</b> (entrevistas, questionários, observação, workshops, prototipação) → <b>análise/negociação</b> → <b>especificação</b> → <b>validação</b> → <b>gerenciamento</b> (mudanças e rastreabilidade).</p></div>
+</div>
+</section>
+
+<!-- =================== CASOS DE USO =================== -->
+<section id="uc">
+<h2>2. Modelagem de casos de uso</h2>
+<p class="sub">Mostra <b>quem</b> usa o sistema (atores) e <b>para quê</b> (casos de uso) — a visão externa, sem detalhes de implementação.</p>
+<div class="grid">
+<div class="card"><span class="tag">elementos</span><h3>Ator, caso de uso, fronteira</h3>
+<ul>
+<li><b>Ator</b> (boneco): <b>papel</b> externo que interage com o sistema — pessoa, outro sistema, hardware ou o <b>tempo</b> (tarefas agendadas). Não é um usuário específico.</li>
+<li><b>Caso de uso</b> (elipse): funcionalidade que entrega <b>resultado de valor</b> ao ator. Nome = <b>verbo no infinitivo + complemento</b> ("Emprestar livro").</li>
+<li><b>Fronteira do sistema</b> (retângulo): casos de uso dentro, atores fora.</li>
+<li><b>Associação</b> (linha contínua): ator participa do caso de uso.</li>
+</ul></div>
+
+<div class="card"><span class="tag">o que mais cai</span><h3>«include» × «extend»</h3>
+<table class="t">
+<tr><th></th><th>«include»</th><th>«extend»</th></tr>
+<tr><td>Quando</td><td><b>Sempre</b> executa (obrigatório)</td><td><b>Às vezes</b> (condicional/opcional)</td></tr>
+<tr><td>Seta</td><td>tracejada, <b>do base → incluído</b></td><td>tracejada, <b>da extensão → base</b></td></tr>
+<tr><td>Uso</td><td>Reaproveitar comportamento comum</td><td>Comportamento extra em um <b>ponto de extensão</b></td></tr>
+<tr><td>Exemplo</td><td>Sacar dinheiro → Validar senha</td><td>Calcular multa → Devolver livro</td></tr></table>
+<svg class="mini" viewBox="0 0 520 150" id="miniIncExt"></svg></div>
+
+<div class="card"><span class="tag">herança</span><h3>Generalização</h3>
+<p>Linha contínua com <b>triângulo vazio</b> apontando para o <b>mais geral</b>.</p>
+<ul><li><b>Entre atores:</b> Gerente → Vendedor: o Gerente faz tudo que o Vendedor faz e mais.</li>
+<li><b>Entre casos de uso:</b> "Pagar com Pix" e "Pagar com cartão" especializam "Realizar pagamento".</li></ul></div>
+
+<div class="card"><span class="tag">especificação textual</span><h3>Descrição do caso de uso</h3>
+<ul>
+<li><b>Nome, ID, atores</b> (principal e secundários)</li>
+<li><b>Pré-condições:</b> o que deve ser verdade <b>antes</b> (ex.: aluno autenticado)</li>
+<li><b>Fluxo principal (básico):</b> o "caminho feliz", passo a passo ator ↔ sistema</li>
+<li><b>Fluxos alternativos:</b> variações válidas que ainda alcançam o objetivo</li>
+<li><b>Fluxos de exceção:</b> erros que impedem o objetivo (cartão recusado)</li>
+<li><b>Pós-condições:</b> estado <b>após</b> o sucesso (empréstimo registrado)</li>
+<li><b>Regras de negócio</b> relacionadas</li>
+</ul></div>
+
+<div class="card"><span class="tag">pegadinhas</span><h3>Erros comuns</h3>
+<ul>
+<li>Caso de uso como <b>passo/tela</b> ("Clicar em salvar", "Tela de login") ✗</li>
+<li>Usar setas de associação para indicar <b>ordem/fluxo</b> ✗ (caso de uso não mostra sequência)</li>
+<li>Colocar o <b>banco de dados</b> como ator ✗ (é parte do sistema)</li>
+<li>Inverter a direção de «extend» ✗</li>
+<li>Abusar de «include» para decompor funcionalmente tudo ✗</li>
+</ul></div>
+</div>
+</section>
+
+<!-- =================== CLASSES =================== -->
+<section id="cl">
+<h2>3. Modelagem de classes</h2>
+<p class="sub">Visão estrutural (estática): classes, atributos, operações e os relacionamentos entre elas.</p>
+<div class="grid">
+<div class="card"><span class="tag">a caixa</span><h3>Classe, atributos e métodos</h3>
+<svg class="mini" viewBox="0 0 300 150" id="miniClass"></svg>
+<p>Visibilidade: <code>+</code> público · <code>-</code> privado · <code>#</code> protegido · <code>~</code> pacote.</p>
+<p>Atributo: <code>- nome: String</code> · método: <code>+ calcularTotal(): double</code><br><u>sublinhado</u> = estático · <code>/idade</code> = derivado · <i>itálico</i> ou <code>{abstract}</code> = abstrata.</p></div>
+
+<div class="card"><span class="tag">relacionamentos</span><h3>Setas e losangos</h3>
+<svg class="mini" viewBox="0 0 330 250" id="miniRels"></svg></div>
+
+<div class="card"><span class="tag">o que mais cai</span><h3>Agregação × Composição</h3>
+<table class="t">
+<tr><th></th><th>Agregação ◇</th><th>Composição ◆</th></tr>
+<tr><td>Ideia</td><td>"tem um", todo-parte <b>fraco</b></td><td>"é feito de", todo-parte <b>forte</b></td></tr>
+<tr><td>Parte sem o todo?</td><td><b>Existe</b> independente</td><td><b>Morre</b> junto com o todo</td></tr>
+<tr><td>Losango</td><td>vazio, no lado do <b>todo</b></td><td>cheio, no lado do <b>todo</b></td></tr>
+<tr><td>Ex.</td><td>Time ◇— Jogador</td><td>Pedido ◆— ItemPedido</td></tr></table></div>
+
+<div class="card"><span class="tag">multiplicidade</span><h3>Como ler</h3>
+<table class="t"><tr><td><code>1</code></td><td>exatamente um</td></tr><tr><td><code>0..1</code></td><td>zero ou um (opcional)</td></tr><tr><td><code>*</code> ou <code>0..*</code></td><td>zero ou muitos</td></tr><tr><td><code>1..*</code></td><td>pelo menos um</td></tr><tr><td><code>2..5</code></td><td>de 2 a 5</td></tr></table>
+<div class="ex">Cliente <b>1</b> —— <b>0..*</b> Pedido<br>Lê-se: um cliente faz zero ou muitos pedidos; cada pedido é de exatamente um cliente. O número fica <b>perto da classe que ele quantifica</b>.</div></div>
+
+<div class="card"><span class="tag">avançado</span><h3>Classe associativa, interface, dependência</h3>
+<ul>
+<li><b>Classe associativa:</b> dados da <b>própria relação</b> N:N. Aluno * — * Disciplina, ligada por tracejado a <b>Matrícula</b> (nota, frequência).</li>
+<li><b>Interface/realização:</b> tracejado + triângulo vazio: <code>CartaoCredito ⇢▷ «interface» Pagavel</code>.</li>
+<li><b>Dependência:</b> tracejado com seta aberta: uma classe <b>usa</b> outra temporariamente (parâmetro, variável local).</li>
+<li><b>Navegabilidade:</b> seta na associação: A conhece B, mas não necessariamente o contrário.</li>
+</ul></div>
+</div>
+</section>
+
+<!-- =================== ESTADOS =================== -->
+<section id="est">
+<h2>4. Modelagem de estados</h2>
+<p class="sub">Diagrama de máquina de estados: o <b>ciclo de vida de um objeto</b> — em que situações ele pode estar e quais eventos o fazem mudar.</p>
+<div class="grid">
+<div class="card"><span class="tag">notação</span><h3>Elementos</h3>
+<svg class="mini" viewBox="0 0 470 140" id="miniState"></svg>
+<ul><li><b>Estado inicial:</b> círculo preenchido (pseudoestado, só uma saída)</li>
+<li><b>Estado final:</b> círculo com anel</li>
+<li><b>Estado:</b> retângulo arredondado</li>
+<li><b>Transição:</b> seta com <code>evento [guarda] / ação</code></li>
+<li><b>Escolha:</b> losango com saídas guardadas</li></ul></div>
+
+<div class="card"><span class="tag">o rótulo da seta</span><h3>evento [guarda] / ação</h3>
+<ul><li><b>Evento:</b> o gatilho (<code>pagar</code>, <code>after(30min)</code> = tempo, <code>when(saldo&lt;0)</code> = mudança).</li>
+<li><b>Guarda</b> [entre colchetes]: condição avaliada quando o evento ocorre; se falsa, a transição <b>não dispara</b>.</li>
+<li><b>Ação</b> (após a barra): executada durante a transição, rápida e não interrompível.</li></ul>
+<div class="ex">Aberto —— <code>pagar [valor ≥ total] / emitirRecibo()</code> ——▶ Pago</div>
+<p>Evento que não tem transição no estado atual é <b>ignorado</b>.</p></div>
+
+<div class="card"><span class="tag">dentro do estado</span><h3>entry / do / exit</h3>
+<ul><li><code>entry /</code> ao <b>entrar</b> no estado</li><li><code>do /</code> atividade <b>contínua</b> enquanto está no estado (pode ser interrompida)</li><li><code>exit /</code> ao <b>sair</b></li></ul>
+<p><b>Autotransição</b> (seta saindo e voltando ao mesmo estado) executa <b>exit e entry</b> de novo; a <b>transição interna</b> (<code>evento / ação</code> escrita dentro do estado) <b>não</b> sai do estado.</p></div>
+
+<div class="card"><span class="tag">avançado</span><h3>Compostos, histórico e concorrência</h3>
+<ul><li><b>Estado composto:</b> contém subestados (ex.: "Em uso" com "Tocando" e "Pausado").</li>
+<li><b>Histórico (H):</b> ao voltar ao estado composto, retoma o <b>último subestado</b> ativo, em vez do inicial. <b>H*</b> = histórico profundo.</li>
+<li><b>Regiões ortogonais</b> (linha tracejada dentro do estado): subestados <b>concorrentes</b>.</li>
+<li>Estados × atividades: diagrama de estados = ciclo de vida de <b>um objeto</b>; diagrama de atividades = <b>fluxo de trabalho</b>.</li></ul></div>
+</div>
+</section>
+
+<!-- =================== EDITOR =================== -->
+<section id="montar" class="noprint">
+<h2>5. Monte os diagramas</h2>
+<p class="sub">Escolha um exercício, monte com a paleta e clique em <b>Conferir</b>. Arraste para mover; clique para editar o nome à direita. Para ligar: escolha o tipo de ligação e clique na <b>origem</b> e depois no <b>destino</b>.</p>
+<div class="editor">
+  <div class="ed-top">
+    <select id="exSel"></select>
+    <button class="btn pri" id="bCheck">Conferir</button>
+    <button class="btn" id="bSol">Ver solução</button>
+    <button class="btn" id="bClear">Limpar</button>
+    <button class="btn" id="bDel">Excluir selecionado</button>
+    <span style="font-size:13px;color:var(--muted)" id="saveInfo"></span>
+  </div>
+  <div class="task" id="task"></div>
+  <div class="ed-body">
+    <div class="pal" id="pal"></div>
+    <div class="canvas-wrap"><svg id="cv" viewBox="0 0 900 560"></svg><div class="hint" id="hint"></div></div>
+    <div class="props" id="props"></div>
+  </div>
+  <div class="report" id="report"></div>
+</div>
+</section>
+
+<!-- =================== CLASSIFICADOR =================== -->
+<section id="classif" class="noprint">
+<h2>6. Funcional ou não funcional?</h2>
+<p class="sub">Classifique cada requisito. A explicação aparece logo depois.</p>
+<div class="cls" id="clsList"></div>
+</section>
+
+<!-- =================== SOLUÇÕES (só PDF) =================== -->
+<section id="sols" style="display:none">
+<h2>Exercícios de diagramas — soluções</h2>
+<div id="solList"></div>
+</section>
+
+<!-- =================== QUIZ =================== -->
+<section id="quiz">
+<h2>7. Questões de marcar X</h2>
+<p class="sub noprint">Correção na hora, com explicação. Use o filtro para treinar um assunto.</p>
+<div class="qbar noprint">
+  <span>Acertos <b id="qOk">0</b>/<span id="qDone">0</span></span>
+  <select id="qFil"></select>
+  <div class="pb"><i id="qPb"></i></div>
+  <button class="btn" id="qWrong">Refazer erradas</button>
+  <button class="btn" id="qReset">Recomeçar</button>
+</div>
+<div id="qList"></div>
+</section>
+<footer>Material de estudo — Engenharia de Requisitos · prova de 24/11.</footer>
+</div>
+
+<script>
+const PRINT = new URLSearchParams(location.search).has('print');
+if (PRINT) { document.body.classList.add('print'); document.getElementById('sols').style.display = 'block'; }
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const NS = 'http://www.w3.org/2000/svg';
+const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+
+/* ===================== RENDERIZADOR UML ===================== */
+const DEFS = `<defs>
+<marker id="mArrow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,1 L11,6 L1,11" fill="none" stroke="#14213d" stroke-width="1.6"/></marker>
+<marker id="mTri" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,1 L15,8 L1,15 z" fill="#fff" stroke="#14213d" stroke-width="1.5"/></marker>
+<marker id="mDia" viewBox="0 0 22 12" refX="1" refY="6" markerWidth="22" markerHeight="12" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,6 L11,1 L21,6 L11,11 z" fill="#fff" stroke="#14213d" stroke-width="1.5"/></marker>
+<marker id="mDiaF" viewBox="0 0 22 12" refX="1" refY="6" markerWidth="22" markerHeight="12" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,6 L11,1 L21,6 L11,11 z" fill="#14213d" stroke="#14213d" stroke-width="1.5"/></marker>
+</defs>`;
+
+const EDGE_TYPES = {
+  assoc: {label: 'Associação (linha)', kinds: ['uc', 'cl']},
+  include: {label: '«include» (base → incluído)', kinds: ['uc']},
+  extend: {label: '«extend» (extensão → base)', kinds: ['uc']},
+  gen: {label: 'Generalização (filho → pai)', kinds: ['uc', 'cl']},
+  agg: {label: 'Agregação ◇ (todo → parte)', kinds: ['cl']},
+  comp: {label: 'Composição ◆ (todo → parte)', kinds: ['cl']},
+  dep: {label: 'Dependência (usa → usado)', kinds: ['cl']},
+  real: {label: 'Realização (classe → interface)', kinds: ['cl']},
+  trans: {label: 'Transição (origem → destino)', kinds: ['st']},
+};
+const NODE_TYPES = {
+  actor: {label: '🧍 Ator', kinds: ['uc']}, usecase: {label: '⬭ Caso de uso', kinds: ['uc']}, boundary: {label: '▭ Fronteira do sistema', kinds: ['uc']},
+  class: {label: '▤ Classe', kinds: ['cl']},
+  initial: {label: '● Estado inicial', kinds: ['st']}, state: {label: '▢ Estado', kinds: ['st']}, final: {label: '◉ Estado final', kinds: ['st']}, choice: {label: '◇ Escolha', kinds: ['st']},
+};
+
+function measure(n) {
+  if (n.type === 'actor') return {w: 46, h: 86};
+  if (n.type === 'usecase') return {w: Math.max(120, n.name.length * 7.4 + 34), h: 52};
+  if (n.type === 'boundary') return {w: n.w || 440, h: n.h || 380};
+  if (n.type === 'state') {
+    const lines = [n.name, ...(n.attrs ? n.attrs.split('\n').filter(Boolean) : [])];
+    return {w: Math.max(110, Math.max(...lines.map(l => l.length)) * 7.4 + 26), h: 40 + (lines.length - 1) * 16};
+  }
+  if (n.type === 'initial') return {w: 22, h: 22};
+  if (n.type === 'final') return {w: 28, h: 28};
+  if (n.type === 'choice') return {w: 30, h: 30};
+  if (n.type === 'class') {
+    const a = (n.attrs || '').split('\n').filter(Boolean), m = (n.methods || '').split('\n').filter(Boolean);
+    const w = Math.max(130, ...[n.name + '   ', ...a, ...m].map(l => l.length * 7.1 + 20));
+    return {w, h: 30 + Math.max(1, a.length) * 16 + 8 + Math.max(1, m.length) * 16 + 8, a, m};
+  }
+  return {w: 80, h: 40};
+}
+function nodeSVG(n, sel) {
+  const {w, h} = measure(n), x = n.x, y = n.y, st = sel ? '#2f5bea' : '#14213d', sw = sel ? 2.4 : 1.5;
+  let g = '';
+  if (n.type === 'actor') {
+    const cx = x + w / 2;
+    g = `<circle cx="${cx}" cy="${y + 11}" r="10" fill="#fff" stroke="${st}" stroke-width="${sw}"/><path d="M${cx},${y + 21} v28 M${cx - 18},${y + 32} h36 M${cx},${y + 49} l-14,20 M${cx},${y + 49} l14,20" stroke="${st}" stroke-width="${sw}" fill="none"/>
+    <text x="${cx}" y="${y + 84}" text-anchor="middle" font-size="13" font-weight="600">${esc(n.name)}</text>`;
+  } else if (n.type === 'usecase') {
+    g = `<ellipse cx="${x + w / 2}" cy="${y + h / 2}" rx="${w / 2}" ry="${h / 2}" fill="#fff" stroke="${st}" stroke-width="${sw}"/><text x="${x + w / 2}" y="${y + h / 2 + 4.5}" text-anchor="middle" font-size="13">${esc(n.name)}</text>`;
+  } else if (n.type === 'boundary') {
+    g = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#ffffffb0" stroke="${st}" stroke-width="${sw}"/><text x="${x + w / 2}" y="${y + 20}" text-anchor="middle" font-size="14" font-weight="700">${esc(n.name)}</text>`;
+  } else if (n.type === 'state') {
+    const lines = (n.attrs || '').split('\n').filter(Boolean);
+    g = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="#fff" stroke="${st}" stroke-width="${sw}"/><text x="${x + w / 2}" y="${y + 24}" text-anchor="middle" font-size="13" font-weight="600">${esc(n.name)}</text>` +
+      (lines.length ? `<line x1="${x}" x2="${x + w}" y1="${y + 32}" y2="${y + 32}" stroke="${st}"/>` + lines.map((l, i) => `<text x="${x + 8}" y="${y + 47 + i * 16}" font-size="11.5" font-family="JetBrains Mono,monospace">${esc(l)}</text>`).join('') : '');
+  } else if (n.type === 'initial') {
+    g = `<circle cx="${x + 11}" cy="${y + 11}" r="10" fill="${st}"/>`;
+  } else if (n.type === 'final') {
+    g = `<circle cx="${x + 14}" cy="${y + 14}" r="13" fill="#fff" stroke="${st}" stroke-width="${sw}"/><circle cx="${x + 14}" cy="${y + 14}" r="8" fill="${st}"/>`;
+  } else if (n.type === 'choice') {
+    g = `<path d="M${x + 15},${y} L${x + 30},${y + 15} L${x + 15},${y + 30} L${x},${y + 15} z" fill="#fff" stroke="${st}" stroke-width="${sw}"/>`;
+  } else if (n.type === 'class') {
+    const {a, m} = measure(n);
+    const y2 = y + 30, y3 = y2 + Math.max(1, a.length) * 16 + 8;
+    const abs = n.abstract;
+    g = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fff" stroke="${st}" stroke-width="${sw}"/>` +
+      (n.stereo ? `<text x="${x + w / 2}" y="${y - 4}" text-anchor="middle" font-size="11">«${esc(n.stereo)}»</text>` : '') +
+      `<text x="${x + w / 2}" y="${y + 20}" text-anchor="middle" font-size="13.5" font-weight="700" ${abs ? 'font-style="italic"' : ''}>${esc(n.name)}</text>
+      <line x1="${x}" x2="${x + w}" y1="${y2}" y2="${y2}" stroke="${st}"/><line x1="${x}" x2="${x + w}" y1="${y3}" y2="${y3}" stroke="${st}"/>` +
+      a.map((l, i) => `<text x="${x + 8}" y="${y2 + 16 + i * 16}" font-size="12" font-family="JetBrains Mono,monospace">${esc(l)}</text>`).join('') +
+      m.map((l, i) => `<text x="${x + 8}" y="${y3 + 16 + i * 16}" font-size="12" font-family="JetBrains Mono,monospace">${esc(l)}</text>`).join('');
+  }
+  return `<g class="node" data-id="${n.id}" style="cursor:move">${g}</g>`;
+}
+function borderPoint(n, tx, ty) {
+  const {w, h} = measure(n), cx = n.x + w / 2, cy = n.y + h / 2, dx = tx - cx, dy = ty - cy;
+  if (!dx && !dy) return [cx, cy];
+  if (n.type === 'usecase' || n.type === 'initial' || n.type === 'final') {
+    const a = w / 2, b = h / 2, t = 1 / Math.sqrt((dx * dx) / (a * a) + (dy * dy) / (b * b)); return [cx + dx * t, cy + dy * t];
+  }
+  const sx = dx ? (w / 2) / Math.abs(dx) : Infinity, sy = dy ? (h / 2) / Math.abs(dy) : Infinity, s = Math.min(sx, sy);
+  return [cx + dx * s, cy + dy * s];
+}
+let _curEdges = [];
+const D_edges_ref = () => _curEdges;
+function edgeSVG(e, nodes, sel) {
+  const a = nodes.find(n => n.id === e.from), b = nodes.find(n => n.id === e.to); if (!a || !b) return '';
+  const ma = measure(a), mb = measure(b);
+  let [x1, y1] = borderPoint(a, b.x + mb.w / 2, b.y + mb.h / 2), [x2, y2] = borderPoint(b, a.x + ma.w / 2, a.y + ma.h / 2);
+  if (e.from !== e.to && D_edges_ref(nodes).some(o => o !== e && o.from === e.to && o.to === e.from)) {
+    const an = Math.atan2(y2 - y1, x2 - x1), ox = -Math.sin(an) * 9, oy = Math.cos(an) * 9;
+    x1 += ox; y1 += oy; x2 += ox; y2 += oy;
+  }
+  let d = `M${x1},${y1} L${x2},${y2}`, lx = (x1 + x2) / 2, ly = (y1 + y2) / 2;
+  if (e.from === e.to) { // autotransição
+    const {w} = ma; x1 = a.x + w * .65; y1 = a.y; x2 = a.x + w * .35; y2 = a.y;
+    d = `M${x1},${y1} C${x1 + 10},${y1 - 50} ${x2 - 10},${y2 - 50} ${x2},${y2}`; lx = (x1 + x2) / 2; ly = y1 - 44;
+  }
+  const col = sel ? '#2f5bea' : '#14213d';
+  const dash = ['include', 'extend', 'dep', 'real'].includes(e.type) ? 'stroke-dasharray="6 4"' : '';
+  let mk = '';
+  if (['include', 'extend', 'dep', 'trans'].includes(e.type) || (e.type === 'assoc' && e.nav)) mk = 'marker-end="url(#mArrow)"';
+  if (e.type === 'gen' || e.type === 'real') mk = 'marker-end="url(#mTri)"';
+  if (e.type === 'agg') mk = 'marker-start="url(#mDia)"';
+  if (e.type === 'comp') mk = 'marker-start="url(#mDiaF)"';
+  let label = e.type === 'include' ? '«include»' : e.type === 'extend' ? '«extend»' : (e.label || '');
+  const ang = Math.atan2(y2 - y1, x2 - x1), off = 14, nx = -Math.sin(ang) * off, ny = Math.cos(ang) * off;
+  const mult = (m, px, py, k) => m ? `<text x="${px + Math.cos(ang) * 18 * k + nx * .9}" y="${py + Math.sin(ang) * 18 * k + ny * .9 + 4}" text-anchor="middle" font-size="12" font-family="JetBrains Mono,monospace">${esc(m)}</text>` : '';
+  return `<g class="edge" data-id="${e.id}" style="cursor:pointer"><path d="${d}" stroke="transparent" stroke-width="14" fill="none"/>
+    <path d="${d}" stroke="${col}" stroke-width="${sel ? 2.4 : 1.5}" fill="none" ${dash} ${mk}/>
+    ${label ? `<text x="${lx + nx}" y="${ly + ny + 4}" text-anchor="middle" font-size="12" style="paint-order:stroke" stroke="#fbfcfe" stroke-width="4" fill="#14213d">${esc(label)}</text>` : ''}
+    ${mult(e.m1, x1, y1, 1)}${mult(e.m2, x2, y2, -1)}</g>`;
+}
+function renderDiagram(d, selId) {
+  _curEdges = d.edges;
+  const nodes = [...d.nodes].sort((p, q) => (q.type === 'boundary') - (p.type === 'boundary'));
+  return DEFS + nodes.filter(n => n.type === 'boundary').map(n => nodeSVG(n, n.id === selId)).join('') +
+    d.edges.map(e => edgeSVG(e, d.nodes, e.id === selId)).join('') +
+    nodes.filter(n => n.type !== 'boundary').map(n => nodeSVG(n, n.id === selId)).join('');
+}
+const svgFont = 'font-family="Inter,system-ui,sans-serif" fill="#14213d"';
+
+/* ===================== EXERCÍCIOS ===================== */
+// helpers p/ montar soluções
+let _id = 0; const N = (type, name, x, y, extra = {}) => ({id: 'n' + (++_id), type, name, x, y, ...extra});
+function sol(nodes, rels) { // rels: [type, fromName, toName, extra]
+  const byName = nm => nodes.find(n => n.name === nm);
+  return {nodes, edges: rels.map(([type, f, t, ex = {}]) => ({id: 'e' + (++_id), type, from: byName(f).id, to: byName(t).id, ...ex}))};
+}
+const EX = [
+ {id: 'uc1', kind: 'uc', title: 'Casos de uso 1 — Biblioteca',
+  task: 'O <b>Aluno</b> pode <b>consultar o acervo</b>. O <b>Bibliotecário</b> registra o <b>empréstimo de livro</b> e a <b>devolução de livro</b>. Todo empréstimo <b>sempre</b> verifica a <b>situação do aluno</b> (pendências). Na devolução, <b>se houver atraso</b>, o sistema <b>calcula a multa</b>. Desenhe a fronteira "Sistema de Biblioteca".',
+  req: {nodes: [['actor', 'aluno'], ['actor', 'bibliotecario'], ['usecase', 'acervo'], ['usecase', 'emprest'], ['usecase', 'devol'], ['usecase', 'situacao'], ['usecase', 'multa'], ['boundary', 'biblioteca']],
+        edges: [['assoc', 'aluno', 'acervo'], ['assoc', 'bibliotecario', 'emprest'], ['assoc', 'bibliotecario', 'devol'], ['include', 'emprest', 'situacao'], ['extend', 'multa', 'devol']]},
+  sol: () => sol([N('boundary', 'Sistema de Biblioteca', 200, 20, {w: 470, h: 500}), N('actor', 'Aluno', 70, 70), N('actor', 'Bibliotecário', 770, 250),
+    N('usecase', 'Consultar acervo', 260, 80), N('usecase', 'Emprestar livro', 450, 190), N('usecase', 'Verificar situação do aluno', 220, 300), N('usecase', 'Devolver livro', 450, 400), N('usecase', 'Calcular multa', 250, 440)],
+    [['assoc', 'Aluno', 'Consultar acervo'], ['assoc', 'Bibliotecário', 'Emprestar livro'], ['assoc', 'Bibliotecário', 'Devolver livro'], ['include', 'Emprestar livro', 'Verificar situação do aluno'], ['extend', 'Calcular multa', 'Devolver livro']])},
+ {id: 'uc2', kind: 'uc', title: 'Casos de uso 2 — App de delivery',
+  task: 'O <b>Cliente</b> <b>faz pedido</b>; ao fazer o pedido o sistema <b>sempre realiza o pagamento</b>, que é processado pelo ator externo <b>Gateway de pagamento</b>. <b>Opcionalmente</b>, o cliente pode <b>aplicar cupom</b> durante o pedido. O <b>Restaurante</b> <b>aceita o pedido</b>. O <b>Cliente VIP</b> é um tipo de Cliente (generalização).',
+  req: {nodes: [['actor', 'cliente'], ['actor', 'restaurante'], ['actor', 'gateway'], ['actor', 'vip'], ['usecase', 'fazer'], ['usecase', 'pagamento'], ['usecase', 'cupom'], ['usecase', 'aceitar']],
+        edges: [['assoc', 'cliente', 'fazer'], ['include', 'fazer', 'pagamento'], ['assoc', 'gateway', 'pagamento'], ['extend', 'cupom', 'fazer'], ['assoc', 'restaurante', 'aceitar'], ['gen', 'vip', 'cliente']]},
+  sol: () => sol([N('boundary', 'App de Delivery', 220, 20, {w: 440, h: 500}), N('actor', 'Cliente', 70, 120), N('actor', 'Cliente VIP', 70, 330), N('actor', 'Restaurante', 770, 90), N('actor', 'Gateway de pagamento', 760, 330),
+    N('usecase', 'Fazer pedido', 300, 150), N('usecase', 'Realizar pagamento', 380, 350), N('usecase', 'Aplicar cupom', 470, 240), N('usecase', 'Aceitar pedido', 440, 70)],
+    [['assoc', 'Cliente', 'Fazer pedido'], ['include', 'Fazer pedido', 'Realizar pagamento'], ['assoc', 'Gateway de pagamento', 'Realizar pagamento'], ['extend', 'Aplicar cupom', 'Fazer pedido'], ['assoc', 'Restaurante', 'Aceitar pedido'], ['gen', 'Cliente VIP', 'Cliente']])},
+ {id: 'cl1', kind: 'cl', title: 'Classes 1 — Loja virtual',
+  task: 'Um <b>Cliente</b> (nome, cpf) faz <b>zero ou muitos</b> <b>Pedidos</b> (data, status); cada pedido é de <b>exatamente um</b> cliente. Um Pedido é <b>composto</b> de <b>um ou mais</b> <b>ItemPedido</b> (quantidade) — o item não existe sem o pedido. Cada ItemPedido refere-se a <b>um Produto</b> (nome, preco). Pedido tem o método <code>+ calcularTotal(): double</code>.',
+  req: {nodes: [['class', 'cliente'], ['class', 'pedido'], ['class', 'itempedido'], ['class', 'produto']],
+        edges: [['assoc', 'cliente', 'pedido', {m: ['1', '*']}], ['comp', 'pedido', 'itempedido', {m: ['1', '1..*']}], ['assoc', 'itempedido', 'produto']],
+        extra: [['method', 'pedido', 'calculartotal']]},
+  sol: () => sol([N('class', 'Cliente', 40, 60, {attrs: '- nome: String\n- cpf: String', methods: ''}), N('class', 'Pedido', 360, 60, {attrs: '- data: Date\n- status: String', methods: '+ calcularTotal(): double'}),
+    N('class', 'ItemPedido', 360, 330, {attrs: '- quantidade: int', methods: '+ subtotal(): double'}), N('class', 'Produto', 690, 330, {attrs: '- nome: String\n- preco: double', methods: ''})],
+    [['assoc', 'Cliente', 'Pedido', {m1: '1', m2: '0..*', label: 'faz'}], ['comp', 'Pedido', 'ItemPedido', {m1: '1', m2: '1..*'}], ['assoc', 'ItemPedido', 'Produto', {m1: '0..*', m2: '1'}]])},
+ {id: 'cl2', kind: 'cl', title: 'Classes 2 — Universidade',
+  task: '<b>Funcionario</b> é <b>abstrata</b> (nome, salario). <b>Professor</b> (titulacao) e <b>Tecnico</b> (setor) <b>herdam</b> de Funcionario. Um <b>Departamento</b> <b>agrega</b> vários funcionários (o funcionário continua existindo se o departamento for extinto). <b>Professor</b> e <b>Disciplina</b> têm relação muitos-para-muitos.',
+  req: {nodes: [['class', 'funcionario'], ['class', 'professor'], ['class', 'tecnico'], ['class', 'departamento'], ['class', 'disciplina']],
+        edges: [['gen', 'professor', 'funcionario'], ['gen', 'tecnico', 'funcionario'], ['agg', 'departamento', 'funcionario'], ['assoc', 'professor', 'disciplina', {m: ['*', '*']}]],
+        extra: [['abstract', 'funcionario']]},
+  sol: () => sol([N('class', 'Funcionario', 340, 40, {abstract: true, attrs: '# nome: String\n# salario: double', methods: '+ calcularSalario(): double'}), N('class', 'Departamento', 700, 50, {attrs: '- sigla: String', methods: ''}),
+    N('class', 'Professor', 170, 300, {attrs: '- titulacao: String', methods: ''}), N('class', 'Tecnico', 520, 300, {attrs: '- setor: String', methods: ''}), N('class', 'Disciplina', 120, 460, {attrs: '- codigo: String', methods: ''})],
+    [['gen', 'Professor', 'Funcionario'], ['gen', 'Tecnico', 'Funcionario'], ['agg', 'Departamento', 'Funcionario', {m1: '1', m2: '*'}], ['assoc', 'Professor', 'Disciplina', {m1: '*', m2: '*', label: 'leciona'}]])},
+ {id: 'st1', kind: 'st', title: 'Estados 1 — Pedido',
+  task: 'Um pedido começa <b>Aberto</b>. Com o evento <code>pagar</code> vai para <b>Pago</b>; com <code>enviar</code> vai para <b>Enviado</b>; com <code>confirmarEntrega</code> vai para <b>Entregue</b> e termina (estado final). De Aberto, o evento <code>cancelar</code> leva a <b>Cancelado</b>. De Pago também é possível <code>cancelar</code>, gerando a ação <code>estornar</code>. Cancelado também termina.',
+  req: {nodes: [['initial', ''], ['state', 'aberto'], ['state', 'pago'], ['state', 'enviado'], ['state', 'entregue'], ['state', 'cancelado'], ['final', '']],
+        edges: [['trans', '@initial', 'aberto'], ['trans', 'aberto', 'pago', {lab: 'pagar'}], ['trans', 'pago', 'enviado', {lab: 'enviar'}], ['trans', 'enviado', 'entregue', {lab: 'entrega'}], ['trans', 'aberto', 'cancelado', {lab: 'cancelar'}], ['trans', 'pago', 'cancelado', {lab: 'estornar'}], ['trans', 'entregue', '@final'], ['trans', 'cancelado', '@final']]},
+  sol: () => sol([N('initial', 'início', 30, 110), N('state', 'Aberto', 90, 96), N('state', 'Pago', 280, 96), N('state', 'Enviado', 460, 96), N('state', 'Entregue', 740, 96), N('state', 'Cancelado', 260, 330), N('final', 'fim', 780, 340)],
+    [['trans', 'início', 'Aberto'], ['trans', 'Aberto', 'Pago', {label: 'pagar'}], ['trans', 'Pago', 'Enviado', {label: 'enviar'}], ['trans', 'Enviado', 'Entregue', {label: 'confirmarEntrega'}], ['trans', 'Aberto', 'Cancelado', {label: 'cancelar'}], ['trans', 'Pago', 'Cancelado', {label: 'cancelar / estornar'}], ['trans', 'Entregue', 'fim'], ['trans', 'Cancelado', 'fim']])},
+ {id: 'st2', kind: 'st', title: 'Estados 2 — Porta com fechadura',
+  task: 'A porta começa <b>Fechada</b>. <code>abrir</code> → <b>Aberta</b>; <code>fechar</code> → Fechada. Estando Fechada, <code>trancar [possui chave]</code> → <b>Trancada</b>; <code>destrancar [possui chave]</code> → Fechada. Na Aberta, coloque <code>entry / acenderLuz</code> (escreva no campo "atividades internas" do estado).',
+  req: {nodes: [['initial', ''], ['state', 'fechada'], ['state', 'aberta'], ['state', 'trancada']],
+        edges: [['trans', '@initial', 'fechada'], ['trans', 'fechada', 'aberta', {lab: 'abrir'}], ['trans', 'aberta', 'fechada', {lab: 'fechar'}], ['trans', 'fechada', 'trancada', {lab: 'chave'}], ['trans', 'trancada', 'fechada', {lab: 'chave'}]],
+        extra: [['internal', 'aberta', 'entry']]},
+  sol: () => sol([N('initial', 'início', 60, 250), N('state', 'Fechada', 200, 236), N('state', 'Aberta', 560, 80, {attrs: 'entry / acenderLuz'}), N('state', 'Trancada', 560, 400)],
+    [['trans', 'início', 'Fechada'], ['trans', 'Fechada', 'Aberta', {label: 'abrir'}], ['trans', 'Aberta', 'Fechada', {label: 'fechar'}], ['trans', 'Fechada', 'Trancada', {label: 'trancar [possui chave]'}], ['trans', 'Trancada', 'Fechada', {label: 'destrancar [possui chave]'}]])},
+ {id: 'free', kind: 'all', title: 'Modo livre — desenhe o que quiser', task: 'Use todas as ferramentas para treinar qualquer diagrama (casos de uso, classes ou estados). Não há correção automática neste modo.', req: null, sol: () => ({nodes: [], edges: []})},
+];
+// ajustar posições das arestas sobrepostas em st2 (fechada<->aberta) com rótulos distintos – aceitável
+
+/* ===================== EDITOR ===================== */
+let cur = EX[0], D = {nodes: [], edges: []}, selId = null, linkType = null, linkFrom = null, drag = null;
+const LS = 'er-uml-v1';
+let store = {}; try { store = JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) {}
+const persist = () => { try { store[cur.id] = D; localStorage.setItem(LS, JSON.stringify(store)); $('#saveInfo').textContent = 'salvo automaticamente'; } catch (e) {} };
+const uid = () => 'u' + Math.random().toString(36).slice(2, 9);
+
+function loadEx(id) {
+  cur = EX.find(e => e.id === id); D = store[id] ? JSON.parse(JSON.stringify(store[id])) : {nodes: [], edges: []};
+  selId = null; linkType = null; linkFrom = null;
+  $('#task').innerHTML = `<b>${cur.title}.</b> ${cur.task}`;
+  const k = cur.kind;
+  const nt = Object.entries(NODE_TYPES).filter(([, v]) => k === 'all' || v.kinds.includes(k));
+  const et = Object.entries(EDGE_TYPES).filter(([, v]) => k === 'all' || v.kinds.includes(k));
+  $('#pal').innerHTML = '<h4>Adicionar</h4>' + nt.map(([t, v]) => `<button class="btn" data-add="${t}">${v.label}</button>`).join('') +
+    '<h4>Ligar (origem → destino)</h4>' + et.map(([t, v]) => `<button class="btn" data-link="${t}">${v.label}</button>`).join('');
+  $$('[data-add]').forEach(b => b.onclick = () => addNode(b.dataset.add));
+  $$('[data-link]').forEach(b => b.onclick = () => { linkType = linkType === b.dataset.link ? null : b.dataset.link; linkFrom = null; draw(); });
+  $('#report').style.display = 'none'; $('#bCheck').style.display = cur.req ? '' : 'none'; $('#bSol').style.display = cur.req ? '' : 'none';
+  draw();
+}
+function addNode(t) {
+  const names = {actor: 'Ator', usecase: 'Caso de uso', boundary: 'Sistema', class: 'Classe', state: 'Estado', initial: 'início', final: 'fim', choice: 'escolha'};
+  const n = {id: uid(), type: t, name: names[t], x: 330 + Math.random() * 120, y: 200 + Math.random() * 100};
+  if (t === 'boundary') { n.x = 200; n.y = 20; n.w = 460; n.h = 500; }
+  if (t === 'class') { n.attrs = '- atributo: tipo'; n.methods = '+ metodo(): void'; }
+  D.nodes.push(n); selId = n.id; persist(); draw();
+}
+function svgPt(ev) { const s = $('#cv'), p = s.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(s.getScreenCTM().inverse()); }
+function draw() {
+  const s = $('#cv');
+  s.innerHTML = `<g ${svgFont}>` + renderDiagram(D, selId) + '</g>';
+  if (linkFrom) { const n = D.nodes.find(x => x.id === linkFrom); if (n) { const m = measure(n); s.insertAdjacentHTML('beforeend', `<rect x="${n.x - 5}" y="${n.y - 5}" width="${m.w + 10}" height="${m.h + 10}" fill="none" stroke="#ff7a45" stroke-width="2.5" stroke-dasharray="5 3" rx="8"/>`); } }
+  $$('[data-link]').forEach(b => b.classList.toggle('on', b.dataset.link === linkType));
+  $('#hint').textContent = linkType ? (linkFrom ? `${EDGE_TYPES[linkType].label}: agora clique no DESTINO.` : `${EDGE_TYPES[linkType].label}: clique na ORIGEM.`) : 'Arraste para mover · clique para selecionar e editar à direita · Delete apaga';
+  props();
+}
+function props() {
+  const P = $('#props'); const n = D.nodes.find(x => x.id === selId), e = D.edges.find(x => x.id === selId);
+  if (n) {
+    let h = `<h4>${NODE_TYPES[n.type].label}</h4>`;
+    if (!['initial', 'final', 'choice'].includes(n.type)) h += `<label>Nome</label><input id="pName" value="${esc(n.name)}">`;
+    if (n.type === 'class') h += `<label>Atributos (um por linha)</label><textarea id="pAttrs">${esc(n.attrs)}</textarea><label>Métodos (um por linha)</label><textarea id="pMeth">${esc(n.methods)}</textarea><label><input type="checkbox" id="pAbs" ${n.abstract ? 'checked' : ''} style="width:auto"> classe abstrata (nome em itálico)</label><label>Estereótipo (ex.: interface)</label><input id="pSt" value="${esc(n.stereo || '')}">`;
+    if (n.type === 'state') h += `<label>Atividades internas (entry / do / exit)</label><textarea id="pAttrs">${esc(n.attrs || '')}</textarea>`;
+    if (n.type === 'boundary') h += `<label>Largura</label><input id="pW" type="number" value="${n.w}"><label>Altura</label><input id="pH" type="number" value="${n.h}">`;
+    P.innerHTML = h;
+    const bind = (id, f) => { const el = $('#' + id); if (el) el.oninput = () => { f(el); persist(); draw2(); }; };
+    bind('pName', el => n.name = el.value); bind('pAttrs', el => n.attrs = el.value); bind('pMeth', el => n.methods = el.value);
+    bind('pSt', el => n.stereo = el.value); bind('pW', el => n.w = +el.value); bind('pH', el => n.h = +el.value);
+    const ab = $('#pAbs'); if (ab) ab.onchange = () => { n.abstract = ab.checked; persist(); draw2(); };
+  } else if (e) {
+    const k = cur.kind, opts = Object.entries(EDGE_TYPES).filter(([, v]) => k === 'all' || v.kinds.includes(k));
+    let h = `<h4>Ligação</h4><label>Tipo</label><select id="pType">${opts.map(([t, v]) => `<option value="${t}" ${t === e.type ? 'selected' : ''}>${v.label}</option>`).join('')}</select>`;
+    if (!['include', 'extend', 'gen', 'real'].includes(e.type)) h += `<label>${e.type === 'trans' ? 'Rótulo: evento [guarda] / ação' : 'Nome da associação'}</label><input id="pLab" value="${esc(e.label || '')}">`;
+    if (['assoc', 'agg', 'comp'].includes(e.type)) h += `<label>Multiplicidade na origem</label><input id="pM1" value="${esc(e.m1 || '')}" placeholder="ex.: 1"><label>Multiplicidade no destino</label><input id="pM2" value="${esc(e.m2 || '')}" placeholder="ex.: 0..*">`;
+    h += `<button class="btn" id="pRev" style="margin-top:10px">Inverter direção</button>`;
+    P.innerHTML = h;
+    $('#pType').onchange = ev => { e.type = ev.target.value; persist(); draw(); };
+    const lb = $('#pLab'); if (lb) lb.oninput = () => { e.label = lb.value; persist(); draw2(); };
+    const m1 = $('#pM1'); if (m1) m1.oninput = () => { e.m1 = m1.value; persist(); draw2(); };
+    const m2 = $('#pM2'); if (m2) m2.oninput = () => { e.m2 = m2.value; persist(); draw2(); };
+    $('#pRev').onclick = () => { [e.from, e.to] = [e.to, e.from]; [e.m1, e.m2] = [e.m2, e.m1]; persist(); draw(); };
+  } else P.innerHTML = '<h4>Propriedades</h4><p style="color:var(--muted);font-size:13.5px">Selecione um elemento ou uma ligação para editar. Dica: comece pela paleta à esquerda.</p>';
+}
+function draw2() { const s = $('#cv'); s.innerHTML = `<g ${svgFont}>` + renderDiagram(D, selId) + '</g>'; }
+$('#cv').addEventListener('pointerdown', ev => {
+  const g = ev.target.closest('.node, .edge'); const p = svgPt(ev);
+  if (!g) { selId = null; linkFrom = null; draw(); return; }
+  const id = g.dataset.id;
+  if (g.classList.contains('node') && linkType) {
+    if (!linkFrom) { linkFrom = id; draw(); return; }
+    D.edges.push({id: uid(), type: linkType, from: linkFrom, to: id}); selId = D.edges[D.edges.length - 1].id; linkFrom = null; persist(); draw(); return;
+  }
+  selId = id;
+  if (g.classList.contains('node')) { const n = D.nodes.find(x => x.id === id); drag = {n, dx: p.x - n.x, dy: p.y - n.y}; $('#cv').setPointerCapture(ev.pointerId); }
+  draw();
+});
+$('#cv').addEventListener('pointermove', ev => { if (!drag) return; const p = svgPt(ev); drag.n.x = Math.round(p.x - drag.dx); drag.n.y = Math.round(p.y - drag.dy); draw2(); });
+$('#cv').addEventListener('pointerup', () => { if (drag) { drag = null; persist(); draw(); } });
+function delSel() { if (!selId) return; D.nodes = D.nodes.filter(n => n.id !== selId); D.edges = D.edges.filter(e => e.id !== selId && e.from !== selId && e.to !== selId); selId = null; persist(); draw(); }
+$('#bDel').onclick = delSel;
+document.addEventListener('keydown', ev => { if ((ev.key === 'Delete') && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) delSel(); if (ev.key === 'Escape') { linkType = null; linkFrom = null; draw(); } });
+$('#bClear').onclick = () => { D = {nodes: [], edges: []}; selId = null; persist(); draw(); $('#report').style.display = 'none'; };
+$('#bSol').onclick = () => { D = JSON.parse(JSON.stringify(cur.sol())); selId = null; persist(); draw(); $('#report').style.display = 'none'; };
+
+/* ---------- correção ---------- */
+const TYPE_PT = {actor: 'ator', usecase: 'caso de uso', boundary: 'fronteira do sistema', class: 'classe', state: 'estado', initial: 'estado inicial', final: 'estado final'};
+function findNode(type, key) {
+  if (key === '' || key.startsWith('@')) return D.nodes.find(n => n.type === type);
+  return D.nodes.find(n => n.type === type && norm(n.name).includes(key));
+}
+function nodeByKey(key) {
+  if (key === '@initial') return D.nodes.find(n => n.type === 'initial');
+  if (key === '@final') return D.nodes.filter(n => n.type === 'final');
+  return D.nodes.filter(n => norm(n.name).includes(key) && n.type !== 'boundary');
+}
+function check() {
+  const R = cur.req, items = [];
+  R.nodes.forEach(([t, k]) => { const ok = !!findNode(t, k); items.push([ok, `${TYPE_PT[t]}${k && !k.startsWith('@') ? ' "' + k + '…"' : ''}`]); });
+  R.edges.forEach(([t, f, to, ex = {}]) => {
+    const A = [].concat(nodeByKey(f) || []), B = [].concat(nodeByKey(to) || []);
+    const sym = t === 'assoc';
+    const cand = D.edges.filter(e => A.some(a => a && a.id === e.from) && B.some(b => b && b.id === e.to) || (sym && B.some(b => b && b.id === e.from) && A.some(a => a && a.id === e.to)));
+    const sameType = cand.filter(e => e.type === t);
+    let ok = sameType.length > 0, msg = `${EDGE_TYPES[t].label.split(' (')[0]}: ${f.replace('@', '')} → ${to.replace('@', '')}`;
+    if (!ok) {
+      const rev = D.edges.find(e => e.type === t && A.some(a => a.id === e.to) && B.some(b => b.id === e.from));
+      if (rev) msg += ' — <b>direção invertida!</b>';
+      else if (cand.length) msg += ` — existe ligação, mas o tipo deveria ser <b>${EDGE_TYPES[t].label.split(' (')[0]}</b>`;
+    }
+    if (ok && ex.lab) { const has = sameType.some(e => norm(e.label).includes(ex.lab)); if (!has) { ok = false; msg += ` — falta o rótulo "${ex.lab}…"`; } }
+    if (ok && ex.m) { const e = sameType[0]; const flip = !A.some(a => a.id === e.from); const [m1, m2] = flip ? [e.m2, e.m1] : [e.m1, e.m2];
+      const good = (s, exp) => { const v = String(s || '').replace(/\s/g, ''); return exp === '*' ? ['*', '0..*'].includes(v) : v === exp; };
+      if (!good(m1, ex.m[0]) || !good(m2, ex.m[1])) { ok = false; msg += ` — confira a multiplicidade (esperado ${ex.m[0]} … ${ex.m[1]})`; } }
+    items.push([ok, msg]);
+  });
+  (R.extra || []).forEach(([kind, k, v]) => {
+    const n = D.nodes.find(x => norm(x.name).includes(k));
+    if (kind === 'method') items.push([!!n && norm(n.methods).includes(v), `método ${v}() em ${k}`]);
+    if (kind === 'abstract') items.push([!!n && !!n.abstract, `${k} marcada como abstrata`]);
+    if (kind === 'internal') items.push([!!n && norm(n.attrs).includes(v), `atividade interna "${v} / …" no estado ${k}`]);
+  });
+  const okN = items.filter(i => i[0]).length;
+  $('#report').style.display = 'block';
+  $('#report').innerHTML = `<b>${okN}/${items.length} itens corretos</b> ${okN === items.length ? '<span class="ok">— diagrama perfeito! 🎯</span>' : '— ajuste os itens em vermelho ou clique em "Ver solução".'}<ul>` +
+    items.map(([ok, m]) => `<li class="${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'} ${m}</li>`).join('') + '</ul>';
+}
+$('#bCheck').onclick = check;
+$('#exSel').innerHTML = EX.map(e => `<option value="${e.id}">${e.title}</option>`).join('');
+$('#exSel').onchange = ev => loadEx(ev.target.value);
+loadEx('uc1');
+
+/* soluções estáticas (PDF) + mini diagramas da teoria */
+function staticSVG(d, vb = '0 0 900 560') { return `<svg class="mini" viewBox="${vb}" xmlns="${NS}"><g ${svgFont}>${renderDiagram(d, null)}</g></svg>`; }
+$('#solList').innerHTML = EX.filter(e => e.req).map(e => `<div class="solbox"><h3>${e.title}</h3><p style="font-size:13px;margin:0 0 6px">${e.task}</p>${staticSVG(e.sol())}</div>`).join('');
+(function minis() {
+  const a = sol([N('usecase', 'Sacar dinheiro', 10, 20), N('usecase', 'Validar senha', 330, 20), N('usecase', 'Devolver livro', 10, 90), N('usecase', 'Calcular multa', 330, 90)],
+    [['include', 'Sacar dinheiro', 'Validar senha'], ['extend', 'Calcular multa', 'Devolver livro']]);
+  $('#miniIncExt').innerHTML = `<g ${svgFont}>${renderDiagram(a)}</g>`;
+  const c = {nodes: [{id: 'c', type: 'class', name: 'ContaBancaria', x: 70, y: 10, attrs: '- numero: String\n- saldo: double\n/ saldoComLimite: double', methods: '+ depositar(valor: double): void\n+ sacar(valor: double): boolean'}], edges: []};
+  $('#miniClass').innerHTML = `<g ${svgFont}>${renderDiagram(c)}</g>`;
+  const box = (id, nm, x, y) => ({id, type: 'class', name: nm, x, y, attrs: '', methods: ''});
+  const r = {nodes: [box('a', 'Animal', 10, 4), box('b', 'Cachorro', 190, 4), box('c', 'Time', 10, 92), box('d', 'Jogador', 190, 92), box('e', 'Pedido', 10, 180), box('f', 'Item', 190, 180)],
+    edges: [{id: 'x1', type: 'gen', from: 'b', to: 'a', label: ''}, {id: 'x2', type: 'agg', from: 'c', to: 'd', m1: '1', m2: '*'}, {id: 'x3', type: 'comp', from: 'e', to: 'f', m1: '1', m2: '1..*'}]};
+  $('#miniRels').innerHTML = `<g ${svgFont}>${renderDiagram(r)}<text x="165" y="40" font-size="10" text-anchor="middle">herança</text><text x="165" y="128" font-size="10" text-anchor="middle">agregação</text><text x="165" y="216" font-size="10" text-anchor="middle">composição</text></g>`;
+  $('#miniRels').setAttribute('viewBox', '0 0 330 250');
+  const s = sol([N('initial', 'i', 10, 50), N('state', 'Aberto', 70, 36), N('state', 'Pago', 300, 36, {attrs: 'entry / emitirNF'}), N('final', 'f', 430, 49)],
+    [['trans', 'i', 'Aberto'], ['trans', 'Aberto', 'Pago', {label: 'pagar [saldo ok] / baixar'}], ['trans', 'Pago', 'f']]);
+  $('#miniState').innerHTML = `<g ${svgFont}>${renderDiagram(s)}</g>`;
+})();
+
+/* ===================== CLASSIFICADOR ===================== */
+const CL = [
+ ['O sistema deve permitir que o professor lance as notas dos alunos.', 'RF', 'Descreve um serviço que o usuário executa.'],
+ ['A página de notas deve carregar em até 2 segundos com 500 usuários simultâneos.', 'RNF', 'Desempenho (RNF de produto) — mensurável.'],
+ ['As senhas devem ser armazenadas com hash bcrypt.', 'RNF', 'Segurança (RNF de produto).'],
+ ['O sistema deve emitir o histórico escolar em PDF.', 'RF', 'Funcionalidade (serviço) do sistema.'],
+ ['O sistema deve estar disponível 99,5% do tempo no período letivo.', 'RNF', 'Confiabilidade/disponibilidade.'],
+ ['O sistema deve tratar dados pessoais conforme a LGPD.', 'RNF', 'RNF externo (legal).'],
+ ['O sistema deve ser desenvolvido em Java, padrão da empresa.', 'RNF', 'RNF organizacional (restrição de implementação).'],
+ ['O sistema deve enviar e-mail ao aluno quando a nota for lançada.', 'RF', 'Comportamento do sistema em resposta a um evento.'],
+ ['O sistema deve funcionar nos navegadores Chrome, Firefox e Safari.', 'RNF', 'Portabilidade/compatibilidade.'],
+ ['O sistema deve permitir filtrar alunos por turma e situação.', 'RF', 'Serviço oferecido ao usuário.'],
+ ['Um usuário novo deve conseguir emitir um boleto em até 3 minutos sem treinamento.', 'RNF', 'Usabilidade (mensurável).'],
+ ['O sistema deve bloquear a matrícula de aluno com mensalidade em atraso.', 'RF', 'Regra de negócio implementada como funcionalidade (o sistema reage a uma condição).'],
+];
+$('#clsList').innerHTML = CL.map((c, k) => `<div class="st" id="cl${k}"><span class="txt">${k + 1}. ${c[0]}</span><span><button class="btn" data-c="${k}" data-v="RF">Funcional</button> <button class="btn" data-c="${k}" data-v="RNF">Não funcional</button></span><small></small></div>`).join('');
+$$('[data-c]').forEach(b => b.onclick = () => { const k = +b.dataset.c, ok = b.dataset.v === CL[k][1], el = $('#cl' + k);
+  el.classList.toggle('right', ok); el.classList.toggle('wrong', !ok); el.querySelector('small').innerHTML = (ok ? '✓ Correto. ' : `✗ É <b>${CL[k][1] === 'RF' ? 'funcional' : 'não funcional'}</b>. `) + CL[k][2]; });
+
+/* ===================== QUIZ ===================== */
+const Q = [
+// tipos de requisitos
+['Requisitos','"O sistema deve permitir que o cliente cancele um pedido em até 24h após a compra." é um requisito:',['Funcional','Não funcional de desempenho','Não funcional organizacional','De domínio'],0,'Descreve um serviço que o sistema oferece. O "24h" é uma regra do serviço, não uma qualidade.'],
+['Requisitos','"O sistema deve responder a 95% das buscas em até 1 segundo." é um requisito:',['Funcional','Não funcional de desempenho','Não funcional externo','Regra de negócio'],1,'Fala de quão rápido, com métrica: RNF de produto (eficiência/desempenho).'],
+['Requisitos','Segundo Sommerville, "o sistema deve ser implementado em Python e seguir o processo Scrum da empresa" é RNF:',['De produto','Organizacional','Externo','De domínio'],1,'Políticas e procedimentos da organização (linguagem, processo, padrões) = organizacionais.'],
+['Requisitos','"O sistema deve cumprir a LGPD no tratamento de dados pessoais." é um RNF:',['De produto','Organizacional','Externo (legal)','Funcional'],2,'Requisitos que vêm de fatores externos ao sistema e à organização (leis, regulamentos, ética) = externos.'],
+['Requisitos','Qual requisito é NÃO verificável e deveria ser reescrito?',['"O sistema deve ser intuitivo e rápido."','"O sistema deve gerar boleto em PDF."','"O login deve bloquear após 5 tentativas erradas."','"O relatório deve carregar em até 3 s."'],0,'"Intuitivo" e "rápido" não têm métrica: não dá para testar. Reescreva com números (tempo, taxa de erro, tarefas concluídas).'],
+['Requisitos','Requisitos de usuário e de sistema diferem porque:',['Os de usuário são em linguagem natural e alto nível; os de sistema são detalhados e precisos, base para o projeto','Os de usuário são sempre não funcionais','Os de sistema são escritos pelo cliente','Não há diferença, são sinônimos'],0,'Usuário: para clientes/gestores. Sistema: especificação detalhada para desenvolvedores, pode virar contrato.'],
+['Requisitos','"O cálculo do frete deve seguir a tabela oficial dos Correios" é melhor classificado como requisito:',['De domínio','De usabilidade','Organizacional','Inverso'],0,'Requisito de domínio: vem das características e regras da área de aplicação.'],
+['Requisitos','No FURPS+, a letra "S" significa:',['Segurança','Suportabilidade (manutenibilidade, configurabilidade)','Sistema','Software'],1,'Functionality, Usability, Reliability, Performance, Supportability + restrições.'],
+['Requisitos','Um requisito "rastreável" é aquele que:',['Tem origem conhecida e pode ser ligado a outros artefatos (casos de uso, código, testes)','Pode ser rastreado por GPS','Foi aprovado pelo cliente','Nunca muda'],0,'Rastreabilidade permite analisar impacto de mudanças: de onde veio e o que depende dele.'],
+['Requisitos','"O sistema NÃO deve armazenar o código de segurança (CVV) do cartão." é um exemplo de:',['Requisito inverso (restrição do que não deve ocorrer)','Requisito funcional de pagamento','Caso de uso','Requisito de usabilidade'],0,'Requisitos inversos dizem o que o sistema não deve fazer; normalmente ligados a segurança/legal.'],
+['Requisitos','Qual técnica de elicitação é mais adequada para descobrir como o usuário realmente trabalha (inclusive o que ele não sabe explicar)?',['Observação/etnografia','Questionário fechado','Leitura do contrato','Análise de pontos de função'],0,'Observar o trabalho no ambiente real revela tarefas implícitas que entrevistas não captam.'],
+// casos de uso
+['Casos de uso','O que é um ator em um diagrama de casos de uso?',['Um papel externo que interage com o sistema (pessoa, outro sistema, hardware ou tempo)','Um usuário específico, como "João"','Uma classe do banco de dados','Um componente interno do sistema'],0,'Ator = papel. A mesma pessoa pode desempenhar vários papéis; um sistema externo também pode ser ator.'],
+['Casos de uso','Em "Sacar dinheiro" o sistema SEMPRE precisa "Validar senha". A relação correta é:',['«include» de Sacar dinheiro para Validar senha','«extend» de Validar senha para Sacar dinheiro','«extend» de Sacar dinheiro para Validar senha','Generalização de Validar senha para Sacar dinheiro'],0,'Comportamento obrigatório e reaproveitável = include, seta saindo do caso base para o incluído.'],
+['Casos de uso','Em "Devolver livro", SOMENTE quando há atraso, o sistema executa "Calcular multa". A relação é:',['«extend», com seta de Calcular multa para Devolver livro','«include», com seta de Devolver livro para Calcular multa','«extend», com seta de Devolver livro para Calcular multa','Associação simples'],0,'Comportamento condicional = extend; a seta parte da extensão e aponta para o caso base (que tem o ponto de extensão).'],
+['Casos de uso','Sobre «extend», é correto afirmar:',['O caso base é completo sem a extensão; a extensão é inserida em um ponto de extensão sob uma condição','O caso base não funciona sem a extensão','A extensão é executada em toda execução do caso base','É representado por linha contínua com triângulo'],0,'Base independente + comportamento opcional. Linha tracejada com seta aberta e estereótipo «extend».'],
+['Casos de uso','O ator "Gerente" pode fazer tudo que o "Vendedor" faz e também "Aprovar desconto". A melhor modelagem é:',['Generalização: Gerente → Vendedor (triângulo no Vendedor) e Gerente associado a Aprovar desconto','«include» de Gerente para Vendedor','Associar o Gerente a todos os casos de uso do Vendedor e usar «extend»','Colocar o Gerente dentro da fronteira do sistema'],0,'Generalização de atores: o ator filho herda as associações do pai. O triângulo aponta para o mais geral.'],
+['Casos de uso','Qual dos itens abaixo NÃO é um bom nome de caso de uso?',['Clicar no botão Salvar','Emitir nota fiscal','Cadastrar cliente','Consultar extrato'],0,'Caso de uso é objetivo do ator com valor, não um passo/clique de interface.'],
+['Casos de uso','Na descrição de um caso de uso, "cliente autenticado no sistema" normalmente aparece como:',['Pré-condição','Pós-condição','Fluxo de exceção','Ator secundário'],0,'Pré-condição: o que precisa ser verdade antes de o caso de uso começar.'],
+['Casos de uso','"Cartão recusado pela operadora; o sistema informa o erro e encerra" é um:',['Fluxo de exceção','Fluxo principal','Pré-condição','Ponto de extensão'],0,'Exceção: situação de erro que impede o objetivo. Alternativo: variação que ainda alcança o objetivo (ex.: pagar com Pix).'],
+['Casos de uso','Um processo que gera relatórios automaticamente toda madrugada pode ter como ator:',['O Tempo (relógio/agendador)','O banco de dados','O próprio relatório','Nenhum, casos de uso sempre precisam de pessoa'],0,'O tempo é um ator clássico para eventos agendados. O banco é interno ao sistema, não é ator.'],
+['Casos de uso','No diagrama de casos de uso, a fronteira do sistema (retângulo) indica que:',['Casos de uso ficam dentro e atores ficam fora','Atores ficam dentro e casos de uso fora','Apenas atores primários ficam dentro','Indica a ordem de execução'],0,'A fronteira separa o escopo do sistema do ambiente externo.'],
+['Casos de uso','Qual afirmação sobre diagramas de casos de uso é FALSA?',['As associações mostram a ordem em que os casos de uso são executados','Mostram a visão externa do sistema','Podem ser complementados por descrições textuais','Atores podem ser outros sistemas'],0,'Diagramas de casos de uso não mostram sequência/fluxo; para isso use atividades ou sequência.'],
+// classes
+['Classes','Na notação UML, os símbolos de visibilidade + - # ~ significam, nessa ordem:',['público, privado, protegido, pacote','privado, público, pacote, protegido','público, protegido, privado, pacote','estático, abstrato, protegido, pacote'],0,'+ public, - private, # protected, ~ package.'],
+['Classes','Pedido ◆—— ItemPedido. O losango cheio indica:',['Composição: o item não existe sem o pedido, e o losango fica no lado do todo (Pedido)','Agregação: o item pode existir sem o pedido','Herança de ItemPedido para Pedido','Dependência temporária'],0,'Composição = todo-parte forte; destruir o todo destrói as partes. Losango cheio no lado do todo.'],
+['Classes','Time ◇—— Jogador (losango vazio). Isso significa que:',['É agregação: o jogador continua existindo se o time deixar de existir','É composição: o jogador some com o time','O jogador herda de Time','Time depende de Jogador só como parâmetro'],0,'Agregação = todo-parte fraco, partes independentes e possivelmente compartilhadas.'],
+['Classes','Cliente "1" —— "0..*" Pedido. A leitura correta é:',['Um cliente pode ter zero ou muitos pedidos; cada pedido pertence a exatamente um cliente','Um pedido pode ter muitos clientes','Todo cliente tem pelo menos um pedido','Cada cliente tem exatamente um pedido'],0,'A multiplicidade perto de Pedido (0..*) diz quantos pedidos um cliente tem; o 1 perto de Cliente diz quantos clientes cada pedido tem.'],
+['Classes','A multiplicidade "0..1" significa:',['Opcional: nenhum ou no máximo um','Exatamente um','Pelo menos um','Zero ou muitos'],0,'0..1 = opcional e único.'],
+['Classes','Como se representa herança (generalização) entre classes?',['Linha contínua com triângulo vazio apontando para a superclasse','Linha tracejada com seta aberta para a subclasse','Losango cheio na superclasse','Linha contínua com seta aberta para a subclasse'],0,'Triângulo vazio na ponta da classe mais geral. Tracejado + triângulo = realização de interface.'],
+['Classes','Uma classe abstrata em UML:',['Tem o nome em itálico (ou {abstract}) e não pode ser instanciada diretamente','Tem o nome sublinhado','Não pode ter atributos','Só pode ter métodos estáticos'],0,'Sublinhado indica membro estático (de classe). Classe abstrata pode ter atributos e métodos concretos.'],
+['Classes','Aluno * —— * Disciplina, e você precisa guardar a nota e a frequência de cada aluno em cada disciplina. A melhor solução é:',['Classe associativa (ex.: Matrícula) ligada à associação por linha tracejada','Colocar nota em Aluno','Colocar nota em Disciplina','Usar herança de Aluno para Disciplina'],0,'Atributos que pertencem à relação N:N vão para a classe associativa.'],
+['Classes','A relação "a classe Relatorio usa um objeto Impressora apenas como parâmetro do método imprimir()" é melhor representada por:',['Dependência (tracejada com seta aberta)','Composição','Agregação','Generalização'],0,'Dependência = relação de uso temporária, sem guardar referência como atributo.'],
+['Classes','O atributo "/idade" (com barra) em uma classe Pessoa indica que idade é:',['Derivado (calculado a partir de outro, como dataNascimento)','Privado','Estático','Opcional'],0,'A barra indica atributo derivado.'],
+['Classes','Qual é a assinatura UML correta de um método público que recebe um valor e retorna booleano?',['+ sacar(valor: double): boolean','boolean sacar(double valor) +','- sacar: boolean(valor)','sacar(valor) -> public boolean'],0,'Formato UML: visibilidade nome(parametro: Tipo): TipoRetorno.'],
+['Classes','A classe CartaoCredito implementa a interface Pagavel. A notação correta é:',['Linha tracejada com triângulo vazio apontando para «interface» Pagavel','Linha contínua com losango','Linha contínua com triângulo apontando para CartaoCredito','Associação com multiplicidade 1..*'],0,'Realização: tracejado + triângulo vazio.'],
+// estados
+['Estados','O diagrama de máquina de estados modela principalmente:',['O ciclo de vida de um objeto: estados e eventos que causam transições','A estrutura estática das classes','Quem usa o sistema e para quê','A ordem das mensagens entre objetos'],0,'Estrutura = classes; atores = casos de uso; mensagens = sequência.'],
+['Estados','Numa transição rotulada "pagar [saldo ≥ total] / emitirRecibo()", o trecho entre colchetes é:',['A guarda (condição)','O evento','A ação','O estado de destino'],0,'Formato: evento [guarda] / ação.'],
+['Estados','Se ocorre o evento de uma transição cuja guarda é falsa:',['A transição não dispara e o objeto permanece no estado atual','A transição dispara mesmo assim','O objeto vai para o estado final','Ocorre erro de modelagem obrigatório'],0,'A guarda é avaliada no momento do evento; falsa = nada acontece por aquela transição.'],
+['Estados','O estado inicial e o estado final são representados, respectivamente, por:',['Círculo preenchido; círculo preenchido dentro de um anel','Retângulo; losango','Círculo vazio; círculo preenchido','Losango; círculo preenchido'],0,'Inicial = bolinha cheia; final = "olho de boi". O losango é o pseudoestado de escolha.'],
+['Estados','Dentro de um estado, "do / tocarMusica" indica:',['Atividade contínua executada enquanto o objeto está no estado','Ação executada apenas ao entrar','Ação executada apenas ao sair','Um evento externo'],0,'entry = ao entrar; do = durante; exit = ao sair.'],
+['Estados','Qual a diferença entre autotransição e transição interna?',['A autotransição sai e volta ao estado, executando exit e entry; a interna não sai do estado','São iguais','A interna executa exit e entry; a autotransição não','Autotransição só existe em estados finais'],0,'Por isso, se o estado tem entry/exit, os dois modelos produzem comportamentos diferentes.'],
+['Estados','O pseudoestado de histórico (H) em um estado composto serve para:',['Retornar ao último subestado ativo quando o estado composto é reentrado','Registrar um log de eventos','Voltar sempre ao subestado inicial','Encerrar a máquina de estados'],0,'H = histórico raso (último subestado do nível); H* = profundo.'],
+['Estados','"after(30 min)" e "when(saldo < 0)" são, respectivamente, eventos de:',['Tempo e mudança','Chamada e sinal','Mudança e tempo','Sinal e tempo'],0,'after = passagem de tempo; when = condição que se torna verdadeira.'],
+['Estados','Um pedido está no estado "Enviado" e ocorre o evento "pagar", que não possui transição saindo de Enviado. O que acontece?',['O evento é ignorado/descartado e o pedido continua Enviado','O pedido volta para Aberto','O pedido vai para Pago','O diagrama fica inválido'],0,'Eventos sem transição definida no estado atual são simplesmente descartados.'],
+['Estados','Regiões separadas por linha tracejada dentro de um estado composto representam:',['Subestados concorrentes (ortogonais), ativos ao mesmo tempo','Estados alternativos excludentes','Transições de erro','Herança de estados'],0,'Ex.: um carro "Ligado" pode estar ao mesmo tempo em "Rádio tocando" e "Ar ligado".'],
+];
+let qa = Q.map(() => null);
+let sd = 99; const rq = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+Q.forEach(q => { const p = q[2].map((_, i) => i).sort(() => rq() - .5); q[2] = p.map(i => q[2][i]); q[3] = p.indexOf(q[3]); });
+const QT = [...new Set(Q.map(q => q[0]))];
+$('#qFil').innerHTML = '<option value="">Todos (' + Q.length + ')</option>' + QT.map(t => `<option>${t}</option>`).join('');
+function rQuiz(onlyWrong) {
+  const f = $('#qFil').value, L = $('#qList'); L.innerHTML = '';
+  Q.forEach(([t, tx, o, a, ex], k) => {
+    if (f && t !== f) return; if (onlyWrong && (qa[k] === null || qa[k] === a)) return;
+    if (onlyWrong) qa[k] = null;
+    const d = document.createElement('div'); d.className = 'q';
+    d.innerHTML = `<div class="meta"><span>QUESTÃO ${k + 1}</span><span>${t.toUpperCase()}</span></div><div class="tx">${tx}</div>` + o.map((s, j) => `<div class="opt" data-j="${j}"><span class="x"></span><b>${'ABCD'[j]})</b><span>${s}</span></div>`).join('') + '<div class="fb"></div>';
+    const paint = () => {
+      const j = qa[k]; const show = PRINT || j !== null; d.classList.toggle('done', show);
+      d.querySelectorAll('.opt').forEach(op => { const jj = +op.dataset.j; op.classList.toggle('pick', !PRINT && jj === j); op.classList.toggle('right', show && jj === a); op.classList.toggle('wrong', !PRINT && show && jj === j && j !== a); });
+      if (show) d.querySelector('.fb').innerHTML = (PRINT ? `<b>Resposta: ${'ABCD'[a]}.</b> ` : j === a ? '<b style="color:var(--ok)">Correto!</b> ' : `<b style="color:var(--bad)">Errado.</b> Resposta: <b>${'ABCD'[a]}</b>. `) + ex;
+    };
+    d.querySelectorAll('.opt').forEach(op => op.onclick = () => { if (qa[k] !== null || PRINT) return; qa[k] = +op.dataset.j; paint(); score(); });
+    paint(); L.appendChild(d);
+  });
+  score();
+}
+function score() {
+  const done = qa.filter(x => x !== null).length, ok = qa.filter((x, k) => x === Q[k][3]).length;
+  $('#qOk').textContent = ok; $('#qDone').textContent = done; $('#qPb').style.width = done / Q.length * 100 + '%';
+  $('#chips').innerHTML = `<span class="chip">${Q.length} questões de marcar X</span><span class="chip">${EX.length - 1} diagramas para montar + modo livre</span><span class="chip">${CL.length} requisitos para classificar</span><span class="chip">Acertos: ${ok}/${done}</span>`;
+}
+$('#qFil').onchange = () => rQuiz(); $('#qReset').onclick = () => { qa = Q.map(() => null); rQuiz(); }; $('#qWrong').onclick = () => rQuiz(true);
+rQuiz();
+</script>
+</body>
+</html>
