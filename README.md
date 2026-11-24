@@ -1,10 +1,9 @@
-# Estudo — Engenharia de Requisitos e UML
+# AV2 · Arquitetura de Computadores
 
-Site de estudo para a prova: tipos de requisitos, modelagem de casos de uso, de classes e de estados.
+Site de estudo para a prova objetiva da AV2.
 
-- Editor para montar diagramas UML com correção automática (6 exercícios + modo livre)
-- Classificador de requisitos funcionais × não funcionais
-- 44 questões de múltipla escolha com explicação
-- [Resumo em PDF](Resumo,%20diagramas%20e%20quest%C3%B5es%20-%20Engenharia%20de%20Requisitos.pdf)
-
-Abra `index.html` no navegador ou acesse pelo GitHub Pages.
+- **Simulado** com 60 questões comentadas (modo estudo e modo prova com cronômetro e nota por assunto)
+- **Vídeos** do YouTube por assunto, com player e link direto
+- **Decodificador de 32 bits**: inteiro sem sinal, complemento de 2, IEEE-754 e instrução RISC-V, com o simulador do programa da revisão 1
+- **Mapa da memória** (TEXT, RODATA, DATA, BSS, HEAP, STACK)
+- **Resumo** de última hora e gabarito comentado em PDF

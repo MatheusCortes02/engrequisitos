@@ -3,768 +3,685 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Requisitos & UML — Prova</title>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<title>AV2 · Arquitetura de Computadores</title>
+<meta name="description" content="Simulado de 60 questões, vídeos, decodificador de 32 bits e resumo para a AV2 de Arquitetura de Computadores.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0f17'/%3E%3Crect x='7' y='7' width='18' height='18' rx='3' fill='none' stroke='%23c6f36b' stroke-width='2.5'/%3E%3Cpath d='M11 3v4M16 3v4M21 3v4M11 25v4M16 25v4M21 25v4M3 11h4M3 16h4M3 21h4M25 11h4M25 16h4M25 21h4' stroke='%23c6f36b' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#eef1f6;--paper:#fff;--ink:#14213d;--muted:#5c6780;--line:#d5dbe6;--acc:#2f5bea;--acc-soft:#e3eaff;--warm:#ff7a45;--ok:#13804f;--ok-bg:#e1f5ea;--bad:#c2332b;--bad-bg:#fde5e3;--code:#f3f5f9}
+:root{
+  --bg:#0b0f17; --bg2:#0f1520; --card:#121a27; --card2:#172133; --line:#223049; --line2:#2d3e5c;
+  --ink:#e9edf5; --muted:#8b97ad; --dim:#5d6a82;
+  --lime:#c6f36b; --amber:#ffb347; --cyan:#6be4f3; --pink:#ff7aa8;
+  --ok:#5ee6a0; --ok-bg:#0f2e22; --bad:#ff6b7d; --bad-bg:#341620;
+  --r:16px;
+}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.6 Inter,system-ui,sans-serif}
-code,.mono{font-family:"JetBrains Mono",Consolas,monospace;font-size:.9em}
-code{background:var(--code);padding:1px 5px;border-radius:4px}
-nav.top{position:sticky;top:0;z-index:20;background:var(--ink)}
-nav.top .in{max-width:1180px;margin:auto;display:flex;gap:4px;align-items:center;padding:8px 16px;overflow-x:auto}
-nav.top b{font-family:"Bricolage Grotesque";color:#fff;font-size:19px;margin-right:14px;white-space:nowrap}
-nav.top a{color:#d9e0f2;text-decoration:none;font-size:14px;padding:6px 10px;border-radius:6px;white-space:nowrap}
-nav.top a:hover{background:#ffffff1c;color:#fff}
-.wrap{max-width:1180px;margin:auto;padding:0 16px}
-.hero{padding:44px 0 20px}
-.hero h1{font-family:"Bricolage Grotesque";font-weight:800;font-size:clamp(34px,6vw,62px);line-height:1;margin:0 0 12px;letter-spacing:-.02em}
-.hero h1 em{font-style:normal;color:var(--acc)}
-.hero p{color:var(--muted);max-width:700px;margin:0}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
-.chip{background:var(--paper);border:1px solid var(--line);border-radius:99px;padding:4px 12px;font-size:13px}
-section{padding:30px 0;border-top:1px solid var(--line)}
-h2{font-family:"Bricolage Grotesque";font-size:32px;margin:0 0 4px;letter-spacing:-.01em}
-.sub{color:var(--muted);margin:0 0 18px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
-.card h3{margin:0 0 6px;font-size:17px}
-.card p,.card li{font-size:14.5px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Inter Tight",system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(900px 500px at 85% -10%,#c6f36b14,transparent 60%),radial-gradient(700px 500px at -10% 110%,#6be4f312,transparent 60%),
+  linear-gradient(var(--bg),var(--bg));}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
+  background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-gradient(90deg,#ffffff06 1px,transparent 1px);background-size:44px 44px}
+main,header,.drawer,.fab{position:relative;z-index:1}
+code,.mono{font-family:"JetBrains Mono",Consolas,monospace}
+code{background:#0b111c;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.86em;color:#dfe7f3}
+pre{background:#0a0f19;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:13px;line-height:1.55;margin:10px 0}
+pre code{border:0;padding:0;background:none}
+a{color:var(--lime)}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* ---------- topo (não fixo) ---------- */
+header.top{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+.chip-ic{width:34px;height:34px;border-radius:9px;background:#0b0f17;border:1px solid var(--line2);display:grid;place-items:center}
+.brand b{font-weight:600;letter-spacing:-.01em}
+.brand small{display:block;color:var(--muted);font-size:12px;font-family:"JetBrains Mono";letter-spacing:.06em}
+.menu-btn{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line2);color:var(--ink);border-radius:999px;padding:9px 16px 9px 12px;font-weight:600;font-size:14px;transition:.2s}
+.menu-btn:hover{border-color:var(--lime);color:var(--lime)}
+.burger{width:18px;height:12px;position:relative}
+.burger i{position:absolute;left:0;right:0;height:2px;background:currentColor;border-radius:2px}
+.burger i:nth-child(1){top:0}.burger i:nth-child(2){top:5px}.burger i:nth-child(3){top:10px}
+
+/* ---------- drawer menu ---------- */
+.scrim{position:fixed;inset:0;background:#03060bcc;backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.25s;z-index:40}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:min(360px,88vw);background:#0d131e;border-right:1px solid var(--line2);z-index:50;transform:translateX(-102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;padding:22px 16px}
+body.menu-open .drawer{transform:none}
+body.menu-open .scrim{opacity:1;pointer-events:auto}
+.drawer .dh{display:flex;justify-content:space-between;align-items:center;margin:0 6px 18px}
+.drawer .dh span{font-family:"JetBrains Mono";font-size:12px;color:var(--muted);letter-spacing:.12em}
+.x-btn{background:none;border:1px solid var(--line2);color:var(--ink);width:34px;height:34px;border-radius:9px;font-size:18px;line-height:1}
+.drawer nav{display:flex;flex-direction:column;gap:4px}
+.drawer nav a{display:flex;gap:14px;align-items:center;padding:12px 12px;border-radius:12px;color:var(--ink);text-decoration:none;transition:.15s}
+.drawer nav a .n{font-family:"JetBrains Mono";font-size:12px;color:var(--dim);width:22px}
+.drawer nav a b{font-weight:600;display:block;font-size:15.5px}
+.drawer nav a small{color:var(--muted);font-size:12.5px}
+.drawer nav a:hover{background:var(--card)}
+.drawer nav a.on{background:var(--card2);box-shadow:inset 3px 0 0 var(--lime)}
+.drawer nav a.on .n{color:var(--lime)}
+.drawer .foot{margin-top:auto;font-size:12.5px;color:var(--dim);padding:0 8px}
+
+/* ---------- views ---------- */
+.view{display:none;animation:fade .35s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.vhead{padding:18px 0 22px}
+.kick{font-family:"JetBrains Mono";font-size:12px;letter-spacing:.14em;color:var(--lime);text-transform:uppercase}
+.vhead h2{font-family:"Instrument Serif",serif;font-weight:400;font-size:clamp(38px,6vw,58px);line-height:1.02;margin:6px 0 8px;letter-spacing:-.01em}
+.vhead h2 em{color:var(--lime)}
+.vhead p{color:var(--muted);margin:0;max-width:680px}
+
+/* ---------- home ---------- */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center;padding:26px 0 34px}
+@media(max-width:880px){.hero{grid-template-columns:1fr}}
+.hero h1{font-family:"Instrument Serif",serif;font-weight:400;font-size:clamp(48px,8vw,92px);line-height:.95;margin:10px 0 16px;letter-spacing:-.02em}
+.hero h1 em{color:var(--lime);font-style:italic}
+.hero p{color:var(--muted);font-size:17px;max-width:520px;margin:0 0 22px}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:11px 20px;font-weight:600;font-size:14.5px;border:1px solid var(--line2);background:var(--card);color:var(--ink);text-decoration:none;transition:.2s}
+.btn:hover{border-color:var(--lime)}
+.btn.pri{background:var(--lime);color:#10170a;border-color:var(--lime)}
+.btn.pri:hover{filter:brightness(1.06)}
+.btn.sm{padding:7px 14px;font-size:13px}
+.reg{background:linear-gradient(180deg,#121a27,#0e1520);border:1px solid var(--line2);border-radius:20px;padding:18px;box-shadow:0 30px 80px -30px #000}
+.reg .rh{display:flex;justify-content:space-between;font-family:"JetBrains Mono";font-size:11.5px;color:var(--muted);margin-bottom:10px}
+.bitrow{display:grid;grid-template-columns:repeat(16,1fr);gap:3px}
+.bitrow+.bitrow{margin-top:3px}
+.bit{font-family:"JetBrains Mono";font-size:12px;text-align:center;border-radius:4px;padding:5px 0;background:#0a0f19;border:1px solid #1b2638;color:var(--dim);transition:.25s}
+.bit.one{color:#10170a;background:var(--lime);border-color:var(--lime)}
+.bit.s.one{background:var(--pink);border-color:var(--pink)}
+.bit.e.one{background:var(--cyan);border-color:var(--cyan)}
+.reg .vals{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.reg .vals div{background:#0a0f19;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.reg .vals small{display:block;font-size:10.5px;color:var(--dim);font-family:"JetBrains Mono";letter-spacing:.08em}
+.reg .vals span{font-family:"JetBrains Mono";font-size:13px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;padding-bottom:40px}
+.tile{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;color:var(--ink);text-decoration:none;overflow:hidden;transition:.25s;min-height:168px;display:flex;flex-direction:column}
+.tile:hover{border-color:var(--lime);transform:translateY(-3px);background:var(--card2)}
+.tile .n{font-family:"JetBrains Mono";font-size:12px;color:var(--dim)}
+.tile h3{font-family:"Instrument Serif",serif;font-weight:400;font-size:30px;margin:auto 0 4px;line-height:1}
+.tile p{margin:0;color:var(--muted);font-size:14px}
+.tile .glyph{position:absolute;right:16px;top:14px;font-family:"JetBrains Mono";font-size:12px;color:var(--lime);border:1px solid #c6f36b40;border-radius:999px;padding:2px 9px}
+.tile.big{grid-column:span 2;background:linear-gradient(135deg,#1a2a12,#121a27 60%);border-color:#c6f36b55}
+@media(max-width:560px){.tile.big{grid-column:auto}}
+.stats{display:flex;gap:26px;flex-wrap:wrap;margin:0 0 26px;font-family:"JetBrains Mono";font-size:12.5px;color:var(--muted)}
+.stats b{display:block;font-family:"Instrument Serif",serif;font-weight:400;font-size:34px;color:var(--ink);line-height:1}
+
+/* ---------- quiz ---------- */
+.qtools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--line2);border-radius:999px;padding:4px}
+.seg button{border:0;background:none;color:var(--muted);border-radius:999px;padding:7px 14px;font-weight:600;font-size:13.5px}
+.seg button.on{background:var(--lime);color:#10170a}
+select.sel{background:var(--card);color:var(--ink);border:1px solid var(--line2);border-radius:999px;padding:9px 14px;font:inherit;font-size:13.5px}
+.qlayout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:18px;align-items:start;padding-bottom:50px}
+@media(max-width:900px){.qlayout{grid-template-columns:1fr}.side{order:-1}}
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px}
+.qcard .meta{display:flex;justify-content:space-between;gap:10px;font-family:"JetBrains Mono";font-size:12px;color:var(--muted)}
+.qcard .meta .tp{color:var(--lime)}
+.qcard .tx{font-size:18px;line-height:1.55;margin:14px 0 18px}
+.opt{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line2);border-radius:14px;padding:13px 15px;margin:9px 0;background:#0e1521;cursor:pointer;transition:.15s}
+.opt:hover{border-color:var(--muted)}
+.opt .box{flex:none;width:24px;height:24px;border:2px solid var(--dim);border-radius:6px;display:grid;place-items:center;font-weight:700;color:var(--amber);font-family:"JetBrains Mono";font-size:14px}
+.opt .l{font-family:"JetBrains Mono";color:var(--dim);flex:none;font-size:14px;padding-top:1px}
+.opt.pick .box{border-color:var(--amber)}
+.opt.pick .box::after{content:"X"}
+.opt.right{border-color:var(--ok);background:var(--ok-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.locked .opt{cursor:default}
+.fb{display:none;margin-top:14px;padding:12px 14px;border-radius:12px;background:#0a0f19;border:1px solid var(--line);border-left:3px solid var(--lime);font-size:15px}
+.show .fb{display:block}
+.qnav{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
+.side{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;position:sticky;top:16px}
+.side h4{margin:0 0 4px;font-size:13px;color:var(--muted);font-weight:500;font-family:"JetBrains Mono";letter-spacing:.06em}
+.big-num{font-family:"Instrument Serif",serif;font-size:44px;line-height:1}
+.grid60{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin:12px 0}
+.grid60 button{aspect-ratio:1;border-radius:6px;border:1px solid var(--line2);background:#0c121c;color:var(--muted);font-family:"JetBrains Mono";font-size:10.5px;padding:0}
+.grid60 button.ans{background:#2a3550;color:var(--ink)}
+.grid60 button.ok{background:#1d5a3c;color:#c9ffe1;border-color:#2f8a5c}
+.grid60 button.no{background:#5a1d2a;color:#ffd0d7;border-color:#8a2f42}
+.grid60 button.cur{outline:2px solid var(--lime);outline-offset:1px}
+.grid60 button.hide{opacity:.15;pointer-events:none}
+.timer{font-family:"JetBrains Mono";color:var(--amber);font-size:20px}
+.pbar{height:6px;background:#0a0f19;border-radius:9px;overflow:hidden;margin:10px 0}
+.pbar i{display:block;height:100%;background:var(--lime);width:0;transition:width .3s}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.result{background:linear-gradient(135deg,#1a2a12,#121a27 70%);border:1px solid #c6f36b66;border-radius:20px;padding:22px;margin-bottom:16px;display:none}
+.result h3{font-family:"Instrument Serif",serif;font-weight:400;font-size:40px;margin:0}
+table.tb{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+table.tb td,table.tb th{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
+table.tb th{color:var(--muted);font-weight:500;font-size:12px;font-family:"JetBrains Mono"}
+.bars i{display:inline-block;height:7px;border-radius:4px;background:var(--lime);vertical-align:middle}
+
+/* ---------- vídeos ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chips button{border:1px solid var(--line2);background:var(--card);color:var(--muted);border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:500}
+.chips button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding-bottom:50px}
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.player{position:relative;aspect-ratio:16/9;background:#000;cursor:pointer;overflow:hidden}
+.player img{width:100%;height:100%;object-fit:cover;opacity:.85;transition:.3s}
+.player:hover img{opacity:1;transform:scale(1.03)}
+.player .play{position:absolute;inset:0;display:grid;place-items:center}
+.player .play span{width:64px;height:64px;border-radius:50%;background:#c6f36be6;display:grid;place-items:center;box-shadow:0 10px 30px #0008;transition:.2s}
+.player:hover .play span{transform:scale(1.08)}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vbody{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.vbody .tp{font-family:"JetBrains Mono";font-size:11px;color:var(--lime);letter-spacing:.08em;text-transform:uppercase}
+.vbody h4{margin:0;font-size:15.5px;line-height:1.35;font-weight:600}
+.vbody .ch{color:var(--muted);font-size:13px}
+.vlinks{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap}
+.vlinks a,.vlinks button{font-size:12.5px;border:1px solid var(--line2);background:#0e1521;color:var(--ink);border-radius:999px;padding:6px 12px;text-decoration:none;font-weight:500}
+.vlinks a:hover,.vlinks button:hover{border-color:var(--lime);color:var(--lime)}
+.vlist{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:6px 16px;margin-bottom:50px}
+.vlist div{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.vlist div:last-child{border-bottom:0}
+.vlist .u{font-family:"JetBrains Mono";font-size:12.5px;color:var(--muted);margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:45%}
+
+/* ---------- ferramentas ---------- */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:18px}
+.panel h3{margin:0 0 4px;font-size:19px}
+.panel .muted{color:var(--muted);font-size:14px;margin:0 0 12px}
+.inp{width:100%;font-family:"JetBrains Mono";font-size:15px;background:#0a0f19;color:var(--ink);border:1px solid var(--line2);border-radius:12px;padding:12px 14px}
+.inp:focus{outline:none;border-color:var(--lime)}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.presets button{font-family:"JetBrains Mono";font-size:12px;border:1px solid var(--line2);background:#0e1521;color:var(--muted);border-radius:8px;padding:5px 9px}
+.presets button:hover{color:var(--lime);border-color:var(--lime)}
+.bits32{display:grid;grid-template-columns:repeat(32,1fr);gap:2px;margin:14px 0 4px}
+@media(max-width:700px){.bits32{grid-template-columns:repeat(16,1fr)}}
+.bits32 span{font-family:"JetBrains Mono";font-size:12px;text-align:center;padding:6px 0;border-radius:4px}
+.blabel{display:grid;grid-template-columns:repeat(32,1fr);gap:2px;font-family:"JetBrains Mono";font-size:9.5px;color:var(--dim);text-align:center}
+@media(max-width:700px){.blabel{display:none}}
+.f-s{background:#5b2338}.f-e{background:#1d4a5a}.f-m{background:#24331d}
+.f-op{background:#4a3a14}.f-rd{background:#1d4a5a}.f-f3{background:#43255a}.f-rs1{background:#1f4d36}.f-rs2{background:#5a3220}.f-f7{background:#2f3648}
+.outg{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:12px}
+.outg div{background:#0a0f19;border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+.outg small{display:block;color:var(--dim);font-family:"JetBrains Mono";font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px}
+.outg span{font-family:"JetBrains Mono";font-size:14px;word-break:break-word}
+.outg .hl span{color:var(--lime)}
+.memlay{display:grid;grid-template-columns:330px minmax(0,1fr);gap:18px}
+@media(max-width:820px){.memlay{grid-template-columns:1fr}}
+.stack{display:flex;flex-direction:column;gap:6px}
+.segm{border:1px solid var(--line2);border-radius:12px;padding:12px 14px;cursor:pointer;background:#0e1521;transition:.15s;display:flex;justify-content:space-between;align-items:center}
+.segm:hover{border-color:var(--muted)}
+.segm.on{border-color:var(--lime);background:#16220f}
+.segm b{font-size:14.5px}
+.segm small{font-family:"JetBrains Mono";font-size:11px;color:var(--muted)}
+.gap{text-align:center;font-family:"JetBrains Mono";font-size:11px;color:var(--dim);padding:4px 0}
+.seginfo{background:#0a0f19;border:1px solid var(--line);border-radius:14px;padding:18px}
+.seginfo h4{margin:0 0 6px;font-family:"Instrument Serif",serif;font-weight:400;font-size:30px}
+
+/* ---------- resumo ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;padding-bottom:50px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.card .tag{font-family:"JetBrains Mono";font-size:11px;letter-spacing:.1em;color:var(--amber);text-transform:uppercase}
+.card h3{margin:4px 0 8px;font-size:18px}
+.card p,.card li{font-size:14.5px;color:#cdd5e3}
 .card ul{padding-left:18px;margin:6px 0}
-.tag{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--warm)}
-.ex{background:var(--code);border-left:3px solid var(--acc);border-radius:0 8px 8px 0;padding:8px 12px;font-size:14px;margin:8px 0}
-.warn{background:#fff3ea;border-left:3px solid var(--warm);border-radius:0 8px 8px 0;padding:8px 12px;font-size:14px;margin:8px 0}
-table.t{width:100%;border-collapse:collapse;font-size:14px}
-table.t td,table.t th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
-table.t th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-svg.mini{width:100%;height:auto;background:#fafbfd;border:1px solid var(--line);border-radius:8px;margin:6px 0}
-/* editor */
-.editor{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.ed-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px;border-bottom:1px solid var(--line);background:#f8f9fc}
-.ed-top select{font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff}
-.btn{font:inherit;font-size:13.5px;font-weight:500;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
-.btn:hover{border-color:var(--acc)}
-.btn.pri{background:var(--acc);color:#fff;border-color:var(--acc)}
-.btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.btn.warm{background:var(--warm);border-color:var(--warm);color:#fff}
-.ed-body{display:grid;grid-template-columns:200px minmax(0,1fr) 250px}
-@media(max-width:980px){.ed-body{grid-template-columns:1fr}}
-.pal{padding:12px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
-.pal h4,.props h4{margin:6px 0 2px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.pal .btn{text-align:left}
-.canvas-wrap{position:relative;background:#fbfcfe;background-image:radial-gradient(#d9dfeb 1px,transparent 1px);background-size:18px 18px;min-height:420px}
-svg#cv{width:100%;height:auto;display:block;touch-action:none;user-select:none}
-.hint{position:absolute;left:10px;bottom:8px;font-size:12.5px;color:var(--muted);background:#ffffffd9;padding:3px 8px;border-radius:6px;max-width:95%}
-.props{padding:12px;border-left:1px solid var(--line);font-size:14px}
-.props label{display:block;font-size:12.5px;color:var(--muted);margin-top:8px}
-.props input,.props textarea,.props select{width:100%;font:inherit;font-size:13.5px;padding:6px 8px;border:1px solid var(--line);border-radius:7px}
-.props textarea{font-family:"JetBrains Mono";font-size:12.5px;min-height:70px}
-.task{padding:12px 14px;border-bottom:1px solid var(--line);font-size:14.5px;background:#fff}
-.task b{color:var(--acc)}
-.report{padding:12px 14px;border-top:1px solid var(--line);font-size:14px;display:none}
-.report .ok{color:var(--ok)} .report .no{color:var(--bad)}
-.report ul{margin:6px 0;padding-left:18px}
-/* classificador */
-.cls{display:grid;gap:8px}
-.st{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
-.st span.txt{flex:1;min-width:220px;font-size:14.5px}
-.st.right{border-color:var(--ok);background:var(--ok-bg)} .st.wrong{border-color:var(--bad);background:var(--bad-bg)}
-.st small{display:block;width:100%;color:var(--muted)}
-/* quiz */
-.qbar{position:sticky;top:46px;z-index:10;background:var(--ink);color:#fff;border-radius:10px;padding:9px 14px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-.qbar select{font:inherit;font-size:13px;border-radius:6px;padding:4px 6px}
-.qbar .pb{flex:1;min-width:100px;height:7px;background:#ffffff30;border-radius:8px;overflow:hidden}
-.qbar .pb i{display:block;height:100%;width:0;background:var(--warm);transition:width .3s}
-.q{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 12px}
-.q .meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.04em}
-.q .tx{margin:6px 0 10px;font-weight:500}
-.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin:6px 0;cursor:pointer;font-size:14.5px}
-.opt:hover{border-color:var(--ink)}
-.opt .x{flex:none;width:21px;height:21px;border:2px solid var(--ink);border-radius:4px;display:grid;place-items:center;font-weight:800;font-size:13px}
-.opt.pick .x::after{content:"X"}
-.opt.right{background:var(--ok-bg);border-color:var(--ok)} .opt.wrong{background:var(--bad-bg);border-color:var(--bad)}
-.q .fb{display:none;margin-top:8px;padding:8px 12px;border-radius:8px;background:var(--code);font-size:14px}
-.q.done .fb{display:block}
-footer{color:var(--muted);font-size:13px;padding:30px 0 60px}
-/* print */
-body.print{background:#fff;font-size:12.5px}
-body.print nav.top,body.print .noprint,body.print .qbar{display:none!important}
-body.print .card,body.print .q,body.print .solbox{break-inside:avoid}
-body.print section{padding:14px 0}
-body.print .q .fb{display:block}
-.solbox{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
-.solbox h3{margin:0 0 4px;font-size:16px}
+.card table{width:100%;border-collapse:collapse;font-size:13px}
+.card td,.card th{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left}
+.card th{color:var(--muted);font-weight:500;font-family:"JetBrains Mono";font-size:11px}
+footer{color:var(--dim);font-size:13px;padding:10px 0 40px;text-align:center}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--lime);color:#10170a;padding:10px 18px;border-radius:999px;font-weight:600;font-size:14px;opacity:0;transition:.25s;z-index:60;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
 </style>
 </head>
 <body>
-<nav class="top"><div class="in">
-  <b>Requisitos &amp; UML</b>
-  <a href="#req">Tipos de requisitos</a><a href="#uc">Casos de uso</a><a href="#cl">Classes</a><a href="#est">Estados</a><a href="#montar">Montar diagramas</a><a href="#classif">Classificar</a><a href="#quiz">Questões</a>
-</div></nav>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Menu">
+  <div class="dh"><span>MENU</span><button class="x-btn" id="closeMenu" aria-label="Fechar">×</button></div>
+  <nav id="menuList"></nav>
+  <div class="foot">AV2 · Arquitetura de Computadores<br>Prova objetiva · 60 questões · leve calculadora</div>
+</aside>
 
 <div class="wrap">
-<div class="hero">
-  <h1>Engenharia de Requisitos<br>e <em>modelagem UML</em>.</h1>
-  <p>Tudo da prova de 24/11: <b>tipos de requisitos</b>, <b>modelagem de casos de uso</b>, <b>modelagem de classes</b> e <b>modelagem de estados</b>. Leia a teoria, monte os diagramas no editor (ele corrige para você) e faça as questões de marcar X.</p>
-  <div class="chips noprint" id="chips"></div>
-</div>
+<header class="top">
+  <a class="brand" href="#inicio">
+    <span class="chip-ic"><svg width="20" height="20" viewBox="0 0 32 32"><rect x="7" y="7" width="18" height="18" rx="3" fill="none" stroke="#c6f36b" stroke-width="2.5"/><path d="M11 2v5M16 2v5M21 2v5M11 25v5M16 25v5M21 25v5M2 11h5M2 16h5M2 21h5M25 11h5M25 16h5M25 21h5" stroke="#c6f36b" stroke-width="2"/></svg></span>
+    <span><b>Arquitetura de Computadores</b><small>AV2 · ESTUDO</small></span>
+  </a>
+  <button class="menu-btn" id="openMenu"><span class="burger"><i></i><i></i><i></i></span>Menu</button>
+</header>
 
-<!-- =================== TIPOS DE REQUISITOS =================== -->
-<section id="req">
-<h2>1. Tipos de requisitos</h2>
-<p class="sub">Requisito = descrição do que o sistema deve fazer (serviços) e das restrições sob as quais deve operar.</p>
-<div class="grid">
-<div class="card"><span class="tag">a divisão principal</span><h3>Funcionais × Não funcionais</h3>
-<p><b>Funcional (RF):</b> o que o sistema <b>faz</b> — serviços, reações a entradas, comportamento em situações específicas.</p>
-<div class="ex">RF01 – O sistema deve permitir que o cliente emita a 2ª via do boleto.</div>
-<p><b>Não funcional (RNF):</b> <b>como</b> o sistema deve ser / restrições de qualidade: desempenho, segurança, usabilidade, confiabilidade, portabilidade…</p>
-<div class="ex">RNF01 – 95% das consultas devem responder em até 2 segundos.</div>
-<div class="warn">Truque: se der para escrever como "o usuário pode <i>fazer X</i>", é RF. Se fala de <i>quão rápido / seguro / fácil / disponível</i>, é RNF.</div></div>
-
-<div class="card"><span class="tag">sommerville</span><h3>Classificação dos RNF</h3>
-<table class="t"><tr><th>Tipo</th><th>Exemplos</th></tr>
-<tr><td><b>De produto</b></td><td>Desempenho, eficiência, usabilidade, confiabilidade, segurança, portabilidade, espaço</td></tr>
-<tr><td><b>Organizacionais</b></td><td>Processo e padrões da empresa: linguagem obrigatória, metodologia, prazo de entrega, ambiente operacional</td></tr>
-<tr><td><b>Externos</b></td><td>Legais (LGPD), éticos, regulatórios, interoperabilidade com sistemas de terceiros</td></tr></table></div>
-
-<div class="card"><span class="tag">níveis</span><h3>Requisitos de usuário × de sistema</h3>
-<p><b>De usuário:</b> linguagem natural + diagramas, alto nível, para clientes e gestores.</p>
-<p><b>De sistema:</b> descrição detalhada e precisa (funções, serviços, restrições), base do contrato e do projeto; para desenvolvedores.</p>
-<div class="ex">Usuário: "O sistema deve gerar relatório mensal de vendas."<br>Sistema: "No último dia útil do mês, às 23h, o sistema deve gerar PDF com total por vendedor, filtrado por loja, e enviá-lo ao e-mail do gerente."</div></div>
-
-<div class="card"><span class="tag">outros tipos</span><h3>Domínio, regras de negócio e restrições</h3>
-<ul>
-<li><b>Requisitos de domínio:</b> vêm do domínio da aplicação (leis, cálculos, terminologia da área). Ex.: "o cálculo do INSS segue a tabela progressiva vigente".</li>
-<li><b>Regras de negócio:</b> políticas da organização. Ex.: "aluno com 3 livros emprestados não pode pegar outro".</li>
-<li><b>Restrições (de projeto/implementação):</b> limitam a solução. Ex.: "deve usar PostgreSQL".</li>
-<li><b>Requisitos inversos:</b> o que o sistema <b>não</b> deve fazer. Ex.: "não deve armazenar o CVV do cartão".</li>
-</ul></div>
-
-<div class="card"><span class="tag">qualidade</span><h3>Características de um bom requisito</h3>
-<ul>
-<li><b>Correto</b> e <b>necessário</b></li>
-<li><b>Não ambíguo</b> — uma única interpretação</li>
-<li><b>Verificável / testável</b> — dá para medir</li>
-<li><b>Completo</b>, <b>consistente</b> (não contradiz outro)</li>
-<li><b>Rastreável</b> — origem e impacto conhecidos (ID único)</li>
-<li><b>Priorizado</b> e <b>viável</b></li>
-</ul>
-<div class="warn">"O sistema deve ser fácil de usar" ✗ (não verificável) → "Um usuário novo deve concluir uma compra em até 3 minutos sem ajuda, em 90% dos testes" ✓</div></div>
-
-<div class="card"><span class="tag">modelos</span><h3>FURPS+ e ISO/IEC 25010</h3>
-<p><b>FURPS+</b>: <b>F</b>uncionalidade, <b>U</b>sabilidade, <b>R</b>eliability (confiabilidade), <b>P</b>erformance (desempenho), <b>S</b>uportabilidade (manutenção) + restrições (projeto, implementação, interface, físicas).</p>
-<p><b>ISO 25010</b>: adequação funcional, eficiência de desempenho, compatibilidade, usabilidade, confiabilidade, segurança, manutenibilidade, portabilidade.</p>
-<p>Processo: <b>elicitação</b> (entrevistas, questionários, observação, workshops, prototipação) → <b>análise/negociação</b> → <b>especificação</b> → <b>validação</b> → <b>gerenciamento</b> (mudanças e rastreabilidade).</p></div>
-</div>
-</section>
-
-<!-- =================== CASOS DE USO =================== -->
-<section id="uc">
-<h2>2. Modelagem de casos de uso</h2>
-<p class="sub">Mostra <b>quem</b> usa o sistema (atores) e <b>para quê</b> (casos de uso) — a visão externa, sem detalhes de implementação.</p>
-<div class="grid">
-<div class="card"><span class="tag">elementos</span><h3>Ator, caso de uso, fronteira</h3>
-<ul>
-<li><b>Ator</b> (boneco): <b>papel</b> externo que interage com o sistema — pessoa, outro sistema, hardware ou o <b>tempo</b> (tarefas agendadas). Não é um usuário específico.</li>
-<li><b>Caso de uso</b> (elipse): funcionalidade que entrega <b>resultado de valor</b> ao ator. Nome = <b>verbo no infinitivo + complemento</b> ("Emprestar livro").</li>
-<li><b>Fronteira do sistema</b> (retângulo): casos de uso dentro, atores fora.</li>
-<li><b>Associação</b> (linha contínua): ator participa do caso de uso.</li>
-</ul></div>
-
-<div class="card"><span class="tag">o que mais cai</span><h3>«include» × «extend»</h3>
-<table class="t">
-<tr><th></th><th>«include»</th><th>«extend»</th></tr>
-<tr><td>Quando</td><td><b>Sempre</b> executa (obrigatório)</td><td><b>Às vezes</b> (condicional/opcional)</td></tr>
-<tr><td>Seta</td><td>tracejada, <b>do base → incluído</b></td><td>tracejada, <b>da extensão → base</b></td></tr>
-<tr><td>Uso</td><td>Reaproveitar comportamento comum</td><td>Comportamento extra em um <b>ponto de extensão</b></td></tr>
-<tr><td>Exemplo</td><td>Sacar dinheiro → Validar senha</td><td>Calcular multa → Devolver livro</td></tr></table>
-<svg class="mini" viewBox="0 0 520 150" id="miniIncExt"></svg></div>
-
-<div class="card"><span class="tag">herança</span><h3>Generalização</h3>
-<p>Linha contínua com <b>triângulo vazio</b> apontando para o <b>mais geral</b>.</p>
-<ul><li><b>Entre atores:</b> Gerente → Vendedor: o Gerente faz tudo que o Vendedor faz e mais.</li>
-<li><b>Entre casos de uso:</b> "Pagar com Pix" e "Pagar com cartão" especializam "Realizar pagamento".</li></ul></div>
-
-<div class="card"><span class="tag">especificação textual</span><h3>Descrição do caso de uso</h3>
-<ul>
-<li><b>Nome, ID, atores</b> (principal e secundários)</li>
-<li><b>Pré-condições:</b> o que deve ser verdade <b>antes</b> (ex.: aluno autenticado)</li>
-<li><b>Fluxo principal (básico):</b> o "caminho feliz", passo a passo ator ↔ sistema</li>
-<li><b>Fluxos alternativos:</b> variações válidas que ainda alcançam o objetivo</li>
-<li><b>Fluxos de exceção:</b> erros que impedem o objetivo (cartão recusado)</li>
-<li><b>Pós-condições:</b> estado <b>após</b> o sucesso (empréstimo registrado)</li>
-<li><b>Regras de negócio</b> relacionadas</li>
-</ul></div>
-
-<div class="card"><span class="tag">pegadinhas</span><h3>Erros comuns</h3>
-<ul>
-<li>Caso de uso como <b>passo/tela</b> ("Clicar em salvar", "Tela de login") ✗</li>
-<li>Usar setas de associação para indicar <b>ordem/fluxo</b> ✗ (caso de uso não mostra sequência)</li>
-<li>Colocar o <b>banco de dados</b> como ator ✗ (é parte do sistema)</li>
-<li>Inverter a direção de «extend» ✗</li>
-<li>Abusar de «include» para decompor funcionalmente tudo ✗</li>
-</ul></div>
-</div>
-</section>
-
-<!-- =================== CLASSES =================== -->
-<section id="cl">
-<h2>3. Modelagem de classes</h2>
-<p class="sub">Visão estrutural (estática): classes, atributos, operações e os relacionamentos entre elas.</p>
-<div class="grid">
-<div class="card"><span class="tag">a caixa</span><h3>Classe, atributos e métodos</h3>
-<svg class="mini" viewBox="0 0 300 150" id="miniClass"></svg>
-<p>Visibilidade: <code>+</code> público · <code>-</code> privado · <code>#</code> protegido · <code>~</code> pacote.</p>
-<p>Atributo: <code>- nome: String</code> · método: <code>+ calcularTotal(): double</code><br><u>sublinhado</u> = estático · <code>/idade</code> = derivado · <i>itálico</i> ou <code>{abstract}</code> = abstrata.</p></div>
-
-<div class="card"><span class="tag">relacionamentos</span><h3>Setas e losangos</h3>
-<svg class="mini" viewBox="0 0 330 250" id="miniRels"></svg></div>
-
-<div class="card"><span class="tag">o que mais cai</span><h3>Agregação × Composição</h3>
-<table class="t">
-<tr><th></th><th>Agregação ◇</th><th>Composição ◆</th></tr>
-<tr><td>Ideia</td><td>"tem um", todo-parte <b>fraco</b></td><td>"é feito de", todo-parte <b>forte</b></td></tr>
-<tr><td>Parte sem o todo?</td><td><b>Existe</b> independente</td><td><b>Morre</b> junto com o todo</td></tr>
-<tr><td>Losango</td><td>vazio, no lado do <b>todo</b></td><td>cheio, no lado do <b>todo</b></td></tr>
-<tr><td>Ex.</td><td>Time ◇— Jogador</td><td>Pedido ◆— ItemPedido</td></tr></table></div>
-
-<div class="card"><span class="tag">multiplicidade</span><h3>Como ler</h3>
-<table class="t"><tr><td><code>1</code></td><td>exatamente um</td></tr><tr><td><code>0..1</code></td><td>zero ou um (opcional)</td></tr><tr><td><code>*</code> ou <code>0..*</code></td><td>zero ou muitos</td></tr><tr><td><code>1..*</code></td><td>pelo menos um</td></tr><tr><td><code>2..5</code></td><td>de 2 a 5</td></tr></table>
-<div class="ex">Cliente <b>1</b> —— <b>0..*</b> Pedido<br>Lê-se: um cliente faz zero ou muitos pedidos; cada pedido é de exatamente um cliente. O número fica <b>perto da classe que ele quantifica</b>.</div></div>
-
-<div class="card"><span class="tag">avançado</span><h3>Classe associativa, interface, dependência</h3>
-<ul>
-<li><b>Classe associativa:</b> dados da <b>própria relação</b> N:N. Aluno * — * Disciplina, ligada por tracejado a <b>Matrícula</b> (nota, frequência).</li>
-<li><b>Interface/realização:</b> tracejado + triângulo vazio: <code>CartaoCredito ⇢▷ «interface» Pagavel</code>.</li>
-<li><b>Dependência:</b> tracejado com seta aberta: uma classe <b>usa</b> outra temporariamente (parâmetro, variável local).</li>
-<li><b>Navegabilidade:</b> seta na associação: A conhece B, mas não necessariamente o contrário.</li>
-</ul></div>
-</div>
-</section>
-
-<!-- =================== ESTADOS =================== -->
-<section id="est">
-<h2>4. Modelagem de estados</h2>
-<p class="sub">Diagrama de máquina de estados: o <b>ciclo de vida de um objeto</b> — em que situações ele pode estar e quais eventos o fazem mudar.</p>
-<div class="grid">
-<div class="card"><span class="tag">notação</span><h3>Elementos</h3>
-<svg class="mini" viewBox="0 0 470 140" id="miniState"></svg>
-<ul><li><b>Estado inicial:</b> círculo preenchido (pseudoestado, só uma saída)</li>
-<li><b>Estado final:</b> círculo com anel</li>
-<li><b>Estado:</b> retângulo arredondado</li>
-<li><b>Transição:</b> seta com <code>evento [guarda] / ação</code></li>
-<li><b>Escolha:</b> losango com saídas guardadas</li></ul></div>
-
-<div class="card"><span class="tag">o rótulo da seta</span><h3>evento [guarda] / ação</h3>
-<ul><li><b>Evento:</b> o gatilho (<code>pagar</code>, <code>after(30min)</code> = tempo, <code>when(saldo&lt;0)</code> = mudança).</li>
-<li><b>Guarda</b> [entre colchetes]: condição avaliada quando o evento ocorre; se falsa, a transição <b>não dispara</b>.</li>
-<li><b>Ação</b> (após a barra): executada durante a transição, rápida e não interrompível.</li></ul>
-<div class="ex">Aberto —— <code>pagar [valor ≥ total] / emitirRecibo()</code> ——▶ Pago</div>
-<p>Evento que não tem transição no estado atual é <b>ignorado</b>.</p></div>
-
-<div class="card"><span class="tag">dentro do estado</span><h3>entry / do / exit</h3>
-<ul><li><code>entry /</code> ao <b>entrar</b> no estado</li><li><code>do /</code> atividade <b>contínua</b> enquanto está no estado (pode ser interrompida)</li><li><code>exit /</code> ao <b>sair</b></li></ul>
-<p><b>Autotransição</b> (seta saindo e voltando ao mesmo estado) executa <b>exit e entry</b> de novo; a <b>transição interna</b> (<code>evento / ação</code> escrita dentro do estado) <b>não</b> sai do estado.</p></div>
-
-<div class="card"><span class="tag">avançado</span><h3>Compostos, histórico e concorrência</h3>
-<ul><li><b>Estado composto:</b> contém subestados (ex.: "Em uso" com "Tocando" e "Pausado").</li>
-<li><b>Histórico (H):</b> ao voltar ao estado composto, retoma o <b>último subestado</b> ativo, em vez do inicial. <b>H*</b> = histórico profundo.</li>
-<li><b>Regiões ortogonais</b> (linha tracejada dentro do estado): subestados <b>concorrentes</b>.</li>
-<li>Estados × atividades: diagrama de estados = ciclo de vida de <b>um objeto</b>; diagrama de atividades = <b>fluxo de trabalho</b>.</li></ul></div>
-</div>
-</section>
-
-<!-- =================== EDITOR =================== -->
-<section id="montar" class="noprint">
-<h2>5. Monte os diagramas</h2>
-<p class="sub">Escolha um exercício, monte com a paleta e clique em <b>Conferir</b>. Arraste para mover; clique para editar o nome à direita. Para ligar: escolha o tipo de ligação e clique na <b>origem</b> e depois no <b>destino</b>.</p>
-<div class="editor">
-  <div class="ed-top">
-    <select id="exSel"></select>
-    <button class="btn pri" id="bCheck">Conferir</button>
-    <button class="btn" id="bSol">Ver solução</button>
-    <button class="btn" id="bClear">Limpar</button>
-    <button class="btn" id="bDel">Excluir selecionado</button>
-    <span style="font-size:13px;color:var(--muted)" id="saveInfo"></span>
+<main>
+<!-- ================= INÍCIO ================= -->
+<section class="view" id="v-inicio">
+  <div class="hero">
+    <div>
+      <div class="kick">Prova objetiva · 60 questões · nível muito difícil</div>
+      <h1>Tudo vira <em>bits</em>.<br>Saiba ler cada um.</h1>
+      <p>Simulado com as 60 questões no estilo das revisões, vídeos selecionados por assunto, decodificador de 32 bits igual ao da revisão 1 e um resumo de última hora.</p>
+      <div class="cta"><a class="btn pri" href="#simulado">Começar o simulado →</a><a class="btn" href="#videos">Ver vídeos</a></div>
+    </div>
+    <div class="reg" id="heroReg">
+      <div class="rh"><span>x7 · 32 bits</span><span id="heroHex">0x00000000</span></div>
+      <div class="bitrow" id="r1"></div><div class="bitrow" id="r2"></div>
+      <div class="vals">
+        <div><small>COMPLEMENTO DE 2</small><span id="hv1">0</span></div>
+        <div><small>IEEE-754</small><span id="hv2">0</span></div>
+        <div style="grid-column:span 2"><small>INSTRUÇÃO RISC-V</small><span id="hv3">—</span></div>
+      </div>
+    </div>
   </div>
-  <div class="task" id="task"></div>
-  <div class="ed-body">
-    <div class="pal" id="pal"></div>
-    <div class="canvas-wrap"><svg id="cv" viewBox="0 0 900 560"></svg><div class="hint" id="hint"></div></div>
-    <div class="props" id="props"></div>
+  <div class="stats" id="homeStats"></div>
+  <div class="tiles" id="tiles"></div>
+</section>
+
+<!-- ================= SIMULADO ================= -->
+<section class="view" id="v-simulado">
+  <div class="vhead"><div class="kick">01 · Questões</div><h2>Simulado <em>AV2</em></h2><p>Modo <b>estudo</b> corrige na hora. Modo <b>prova</b> esconde as respostas, liga o cronômetro e dá a nota por assunto no final. Seu progresso fica salvo neste navegador.</p></div>
+  <div class="qtools">
+    <div class="seg"><button id="mEst" class="on">Estudo</button><button id="mSim">Prova</button></div>
+    <select class="sel" id="fTopic"></select>
+    <button class="btn sm" id="bReset">Recomeçar</button>
   </div>
-  <div class="report" id="report"></div>
-</div>
+  <div class="result" id="result"></div>
+  <div class="qlayout">
+    <div>
+      <div class="qcard" id="qcard"></div>
+      <div class="qnav"><button class="btn" id="prev">← Anterior</button><button class="btn pri" id="next">Próxima →</button></div>
+    </div>
+    <aside class="side">
+      <h4>ACERTOS</h4>
+      <div class="big-num"><span id="sOk">0</span><span style="color:var(--dim)">/<span id="sDone">0</span></span></div>
+      <div class="pbar"><i id="pBar"></i></div>
+      <div class="timer" id="timer"></div>
+      <div class="grid60" id="grid60"></div>
+      <div class="legend"><span><i style="background:#2a3550"></i>respondida</span><span><i style="background:#1d5a3c"></i>certa</span><span><i style="background:#5a1d2a"></i>errada</span></div>
+      <button class="btn pri" id="bFinish" style="width:100%;justify-content:center;margin-top:14px;display:none">Entregar prova</button>
+    </aside>
+  </div>
 </section>
 
-<!-- =================== CLASSIFICADOR =================== -->
-<section id="classif" class="noprint">
-<h2>6. Funcional ou não funcional?</h2>
-<p class="sub">Classifique cada requisito. A explicação aparece logo depois.</p>
-<div class="cls" id="clsList"></div>
+<!-- ================= VÍDEOS ================= -->
+<section class="view" id="v-videos">
+  <div class="vhead"><div class="kick">02 · Aulas</div><h2>Vídeos por <em>assunto</em></h2><p>Clique na capa para assistir aqui mesmo. "Abrir no YouTube" leva direto ao vídeo e "Copiar link" copia a URL. Todos os links também estão na lista no fim da página.</p></div>
+  <div class="chips" id="vchips"></div>
+  <div class="vgrid" id="vgrid"></div>
+  <h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:30px;margin:0 0 10px">Todos os links</h3>
+  <div class="vlist" id="vlist"></div>
 </section>
 
-<!-- =================== SOLUÇÕES (só PDF) =================== -->
-<section id="sols" style="display:none">
-<h2>Exercícios de diagramas — soluções</h2>
-<div id="solList"></div>
+<!-- ================= DECODIFICADOR ================= -->
+<section class="view" id="v-decodificador">
+  <div class="vhead"><div class="kick">03 · Ferramenta</div><h2>Decodificador de <em>32 bits</em></h2><p>Cole uma sequência de 32 bits (binário ou hexa com 0x) e veja ao mesmo tempo como inteiro sem sinal, complemento de 2, IEEE-754 e instrução RISC-V, como na revisão 1.</p></div>
+  <div class="panel">
+    <input class="inp" id="dIn" value="10111111110001010010001010000011" spellcheck="false" aria-label="32 bits">
+    <div class="presets" id="presets"></div>
+    <div class="bits32" id="dBits"></div><div class="blabel" id="dLab"></div>
+    <div class="outg" id="dOut"></div>
+  </div>
+  <div class="panel">
+    <h3>Simulador do programa da revisão 1</h3>
+    <p class="muted">Executa A → B → C → D com x10 = 0x20001000 e a memória do item (e).</p>
+    <button class="btn pri sm" id="runSim">Executar passo a passo</button>
+    <pre id="simOut" style="min-height:60px"></pre>
+  </div>
 </section>
 
-<!-- =================== QUIZ =================== -->
-<section id="quiz">
-<h2>7. Questões de marcar X</h2>
-<p class="sub noprint">Correção na hora, com explicação. Use o filtro para treinar um assunto.</p>
-<div class="qbar noprint">
-  <span>Acertos <b id="qOk">0</b>/<span id="qDone">0</span></span>
-  <select id="qFil"></select>
-  <div class="pb"><i id="qPb"></i></div>
-  <button class="btn" id="qWrong">Refazer erradas</button>
-  <button class="btn" id="qReset">Recomeçar</button>
-</div>
-<div id="qList"></div>
+<!-- ================= MEMÓRIA ================= -->
+<section class="view" id="v-memoria">
+  <div class="vhead"><div class="kick">04 · Revisão 2</div><h2>Mapa da <em>memória</em></h2><p>Clique em cada região para ver o que fica nela, com exemplos do programa de temperaturas da revisão 2.</p></div>
+  <div class="memlay" style="padding-bottom:50px">
+    <div class="stack" id="segs"></div>
+    <div class="seginfo" id="segInfo"></div>
+  </div>
 </section>
-<footer>Material de estudo — Engenharia de Requisitos · prova de 24/11.</footer>
+
+<!-- ================= RESUMO ================= -->
+<section class="view" id="v-resumo">
+  <div class="vhead"><div class="kick">05 · Última hora</div><h2>Resumo <em>essencial</em></h2><p>Fórmulas, tabelas e pegadinhas que mais aparecem nas questões. Na versão em PDF tem o gabarito comentado das 60 questões.</p>
+  <div class="cta" style="margin-top:14px"><a class="btn sm" href="Gabarito%20comentado%20-%2060%20quest%C3%B5es.pdf" target="_blank" rel="noopener">Abrir gabarito em PDF ↗</a></div></div>
+  <div class="cards">
+    <div class="card"><span class="tag">bases</span><h3>Conversões rápidas</h3>
+      <table><tr><th>Base</th><th>Agrupar bits</th><th>Ex.: 357</th></tr><tr><td>Hexa</td><td>de 4 em 4</td><td>0x165</td></tr><tr><td>Octal</td><td>de 3 em 3</td><td>545₈</td></tr><tr><td>Binário</td><td>—</td><td>1 0110 0101</td></tr></table>
+      <p>Fração → binário: multiplique por 2 e pegue a parte inteira (0,375 → .011).</p></div>
+    <div class="card"><span class="tag">inteiros</span><h3>Faixas com n bits</h3>
+      <table><tr><th>Representação</th><th>Faixa</th></tr><tr><td>Sem sinal</td><td>0 … 2ⁿ − 1</td></tr><tr><td>Complemento de 2</td><td>−2ⁿ⁻¹ … 2ⁿ⁻¹ − 1</td></tr><tr><td>Sinal-magnitude / C1</td><td>−(2ⁿ⁻¹ − 1) … 2ⁿ⁻¹ − 1 (dois zeros)</td></tr><tr><td>Enviesada (viés 2ⁿ⁻¹−1)</td><td>valor = armazenado − viés</td></tr></table>
+      <p>Overflow com sinal: somar dois de mesmo sinal e o resultado trocar de sinal. Unsigned: carry-out do MSB.</p></div>
+    <div class="card"><span class="tag">ieee-754</span><h3>Precisão simples (32 bits)</h3>
+      <p><code>1 bit sinal | 8 bits expoente (viés 127) | 23 bits fração</code></p>
+      <p>Valor = (−1)ˢ × 1,fração × 2<sup>exp − 127</sup></p>
+      <table><tr><th>Expoente</th><th>Fração</th><th>Significa</th></tr><tr><td>0</td><td>0</td><td>±0</td></tr><tr><td>0</td><td>≠0</td><td>subnormal</td></tr><tr><td>255</td><td>0</td><td>±∞</td></tr><tr><td>255</td><td>≠0</td><td>NaN</td></tr></table>
+      <p>Dupla: 11 bits de expoente (viés 1023) e 52 de fração.</p></div>
+    <div class="card"><span class="tag">risc-v</span><h3>Formatos RV32I</h3>
+<pre><code>R  funct7 | rs2 | rs1 | f3 | rd       | opcode
+I  imm[11:0]    | rs1 | f3 | rd       | opcode
+S  imm[11:5]| rs2 | rs1 | f3 | imm[4:0] | opcode</code></pre>
+      <table><tr><th>Instr.</th><th>Opcode</th><th>f3</th><th>f7</th></tr><tr><td>add</td><td>0110011</td><td>000</td><td>0000000</td></tr><tr><td>sub</td><td>0110011</td><td>000</td><td>0100000</td></tr><tr><td>addi</td><td>0010011</td><td>000</td><td>—</td></tr><tr><td>lw</td><td>0000011</td><td>010</td><td>—</td></tr><tr><td>sw</td><td>0100011</td><td>010</td><td>—</td></tr></table>
+      <p>Imediato de 12 bits em C2: −2048 … 2047. Toda instrução tem 4 bytes: PC ← PC + 4.</p></div>
+    <div class="card"><span class="tag">registradores</span><h3>Quem é quem</h3>
+      <table><tr><td><code>x0</code></td><td>zero: sempre 0, escritas ignoradas</td></tr><tr><td><code>x1</code></td><td>ra: endereço de retorno</td></tr><tr><td><code>x2</code></td><td>sp: ponteiro de pilha</td></tr><tr><td><code>x10–x11</code></td><td>a0–a1: argumentos e retorno</td></tr><tr><td>PC</td><td>endereço da instrução atual (fora de x0–x31)</td></tr><tr><td>IR</td><td>guarda a instrução buscada</td></tr></table>
+      <p>RISC-V é <b>little-endian</b>: o byte menos significativo fica no menor endereço.</p></div>
+    <div class="card"><span class="tag">gcc</span><h3>Compilação passo a passo</h3>
+<pre><code>gcc -E prog.c -o prog.i   # pré-processamento
+gcc -S prog.i -o prog.s   # compilação → assembly
+gcc -c prog.s -o prog.o   # montagem → objeto
+gcc prog.o -o prog        # ligação (linker)</code></pre>
+      <p>"undefined reference" = erro do <b>linker</b>. <code>#define</code> é resolvido no pré-processamento.</p></div>
+    <div class="card"><span class="tag">memória</span><h3>Onde cada variável mora</h3>
+      <table><tr><td><b>TEXT</b></td><td>código das funções</td></tr><tr><td><b>RODATA</b></td><td><code>const</code> global/static, literais de string</td></tr><tr><td><b>DATA</b></td><td>global/static com valor inicial ≠ 0</td></tr><tr><td><b>BSS</b></td><td>global/static sem valor inicial ou = 0</td></tr><tr><td><b>HEAP</b></td><td><code>malloc</code> até <code>free</code></td></tr><tr><td><b>STACK</b></td><td>locais automáticas, parâmetros, ponteiros locais</td></tr></table>
+      <p><code>const</code> sozinho não define a região: const local fica na pilha.</p></div>
+    <div class="card"><span class="tag">desempenho</span><h3>Fórmulas</h3>
+      <p><b>Tempo de CPU</b> = nº instruções × CPI ÷ frequência</p>
+      <p><b>Amdahl</b>: speedup = 1 ÷ ((1 − f) + f ÷ s)</p>
+      <p>Ex.: 80% acelerado 4× → 1 ÷ (0,2 + 0,2) = 2,5×</p>
+      <p><b>Imagem</b>: largura × altura × bytes/pixel · <b>Áudio</b>: taxa × bytes × canais × segundos</p></div>
+    <div class="card"><span class="tag">pegadinhas</span><h3>O que derruba na prova</h3>
+      <ul><li><code>lb</code> estende o sinal, <code>lbu</code> estende com zeros.</li><li>«sw rs2, imm(rs1)»: o registrador fonte é o rs2.</li><li><code>static int x = 0;</code> local → BSS, inicializa uma única vez.</li><li><code>strlen("Ação")</code> em UTF-8 = 6 bytes.</li><li>0,1 não tem representação binária exata.</li><li>Retornar endereço de vetor local = ponteiro pendente.</li></ul></div>
+  </div>
+</section>
+</main>
+<footer>Material de estudo · AV2 de Arquitetura de Computadores</footer>
 </div>
+<div class="toast" id="toast"></div>
 
 <script>
-const PRINT = new URLSearchParams(location.search).has('print');
-if (PRINT) { document.body.classList.add('print'); document.getElementById('sols').style.display = 'block'; }
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
-const NS = 'http://www.w3.org/2000/svg';
-const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+const REG = ['zero','ra','sp','gp','tp','t0','t1','t2','s0/fp','s1','a0','a1','a2','a3','a4','a5','a6','a7','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','t3','t4','t5','t6'];
+const sx = (v, b) => (v & (1 << (b - 1))) ? v - (1 << b) : v;
+const toast = m => { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('on'), 1800); };
 
-/* ===================== RENDERIZADOR UML ===================== */
-const DEFS = `<defs>
-<marker id="mArrow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,1 L11,6 L1,11" fill="none" stroke="#14213d" stroke-width="1.6"/></marker>
-<marker id="mTri" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,1 L15,8 L1,15 z" fill="#fff" stroke="#14213d" stroke-width="1.5"/></marker>
-<marker id="mDia" viewBox="0 0 22 12" refX="1" refY="6" markerWidth="22" markerHeight="12" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,6 L11,1 L21,6 L11,11 z" fill="#fff" stroke="#14213d" stroke-width="1.5"/></marker>
-<marker id="mDiaF" viewBox="0 0 22 12" refX="1" refY="6" markerWidth="22" markerHeight="12" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,6 L11,1 L21,6 L11,11 z" fill="#14213d" stroke="#14213d" stroke-width="1.5"/></marker>
-</defs>`;
-
-const EDGE_TYPES = {
-  assoc: {label: 'Associação (linha)', kinds: ['uc', 'cl']},
-  include: {label: '«include» (base → incluído)', kinds: ['uc']},
-  extend: {label: '«extend» (extensão → base)', kinds: ['uc']},
-  gen: {label: 'Generalização (filho → pai)', kinds: ['uc', 'cl']},
-  agg: {label: 'Agregação ◇ (todo → parte)', kinds: ['cl']},
-  comp: {label: 'Composição ◆ (todo → parte)', kinds: ['cl']},
-  dep: {label: 'Dependência (usa → usado)', kinds: ['cl']},
-  real: {label: 'Realização (classe → interface)', kinds: ['cl']},
-  trans: {label: 'Transição (origem → destino)', kinds: ['st']},
-};
-const NODE_TYPES = {
-  actor: {label: '🧍 Ator', kinds: ['uc']}, usecase: {label: '⬭ Caso de uso', kinds: ['uc']}, boundary: {label: '▭ Fronteira do sistema', kinds: ['uc']},
-  class: {label: '▤ Classe', kinds: ['cl']},
-  initial: {label: '● Estado inicial', kinds: ['st']}, state: {label: '▢ Estado', kinds: ['st']}, final: {label: '◉ Estado final', kinds: ['st']}, choice: {label: '◇ Escolha', kinds: ['st']},
-};
-
-function measure(n) {
-  if (n.type === 'actor') return {w: 46, h: 86};
-  if (n.type === 'usecase') return {w: Math.max(120, n.name.length * 7.4 + 34), h: 52};
-  if (n.type === 'boundary') return {w: n.w || 440, h: n.h || 380};
-  if (n.type === 'state') {
-    const lines = [n.name, ...(n.attrs ? n.attrs.split('\n').filter(Boolean) : [])];
-    return {w: Math.max(110, Math.max(...lines.map(l => l.length)) * 7.4 + 26), h: 40 + (lines.length - 1) * 16};
-  }
-  if (n.type === 'initial') return {w: 22, h: 22};
-  if (n.type === 'final') return {w: 28, h: 28};
-  if (n.type === 'choice') return {w: 30, h: 30};
-  if (n.type === 'class') {
-    const a = (n.attrs || '').split('\n').filter(Boolean), m = (n.methods || '').split('\n').filter(Boolean);
-    const w = Math.max(130, ...[n.name + '   ', ...a, ...m].map(l => l.length * 7.1 + 20));
-    return {w, h: 30 + Math.max(1, a.length) * 16 + 8 + Math.max(1, m.length) * 16 + 8, a, m};
-  }
-  return {w: 80, h: 40};
-}
-function nodeSVG(n, sel) {
-  const {w, h} = measure(n), x = n.x, y = n.y, st = sel ? '#2f5bea' : '#14213d', sw = sel ? 2.4 : 1.5;
-  let g = '';
-  if (n.type === 'actor') {
-    const cx = x + w / 2;
-    g = `<circle cx="${cx}" cy="${y + 11}" r="10" fill="#fff" stroke="${st}" stroke-width="${sw}"/><path d="M${cx},${y + 21} v28 M${cx - 18},${y + 32} h36 M${cx},${y + 49} l-14,20 M${cx},${y + 49} l14,20" stroke="${st}" stroke-width="${sw}" fill="none"/>
-    <text x="${cx}" y="${y + 84}" text-anchor="middle" font-size="13" font-weight="600">${esc(n.name)}</text>`;
-  } else if (n.type === 'usecase') {
-    g = `<ellipse cx="${x + w / 2}" cy="${y + h / 2}" rx="${w / 2}" ry="${h / 2}" fill="#fff" stroke="${st}" stroke-width="${sw}"/><text x="${x + w / 2}" y="${y + h / 2 + 4.5}" text-anchor="middle" font-size="13">${esc(n.name)}</text>`;
-  } else if (n.type === 'boundary') {
-    g = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#ffffffb0" stroke="${st}" stroke-width="${sw}"/><text x="${x + w / 2}" y="${y + 20}" text-anchor="middle" font-size="14" font-weight="700">${esc(n.name)}</text>`;
-  } else if (n.type === 'state') {
-    const lines = (n.attrs || '').split('\n').filter(Boolean);
-    g = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="#fff" stroke="${st}" stroke-width="${sw}"/><text x="${x + w / 2}" y="${y + 24}" text-anchor="middle" font-size="13" font-weight="600">${esc(n.name)}</text>` +
-      (lines.length ? `<line x1="${x}" x2="${x + w}" y1="${y + 32}" y2="${y + 32}" stroke="${st}"/>` + lines.map((l, i) => `<text x="${x + 8}" y="${y + 47 + i * 16}" font-size="11.5" font-family="JetBrains Mono,monospace">${esc(l)}</text>`).join('') : '');
-  } else if (n.type === 'initial') {
-    g = `<circle cx="${x + 11}" cy="${y + 11}" r="10" fill="${st}"/>`;
-  } else if (n.type === 'final') {
-    g = `<circle cx="${x + 14}" cy="${y + 14}" r="13" fill="#fff" stroke="${st}" stroke-width="${sw}"/><circle cx="${x + 14}" cy="${y + 14}" r="8" fill="${st}"/>`;
-  } else if (n.type === 'choice') {
-    g = `<path d="M${x + 15},${y} L${x + 30},${y + 15} L${x + 15},${y + 30} L${x},${y + 15} z" fill="#fff" stroke="${st}" stroke-width="${sw}"/>`;
-  } else if (n.type === 'class') {
-    const {a, m} = measure(n);
-    const y2 = y + 30, y3 = y2 + Math.max(1, a.length) * 16 + 8;
-    const abs = n.abstract;
-    g = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fff" stroke="${st}" stroke-width="${sw}"/>` +
-      (n.stereo ? `<text x="${x + w / 2}" y="${y - 4}" text-anchor="middle" font-size="11">«${esc(n.stereo)}»</text>` : '') +
-      `<text x="${x + w / 2}" y="${y + 20}" text-anchor="middle" font-size="13.5" font-weight="700" ${abs ? 'font-style="italic"' : ''}>${esc(n.name)}</text>
-      <line x1="${x}" x2="${x + w}" y1="${y2}" y2="${y2}" stroke="${st}"/><line x1="${x}" x2="${x + w}" y1="${y3}" y2="${y3}" stroke="${st}"/>` +
-      a.map((l, i) => `<text x="${x + 8}" y="${y2 + 16 + i * 16}" font-size="12" font-family="JetBrains Mono,monospace">${esc(l)}</text>`).join('') +
-      m.map((l, i) => `<text x="${x + 8}" y="${y3 + 16 + i * 16}" font-size="12" font-family="JetBrains Mono,monospace">${esc(l)}</text>`).join('');
-  }
-  return `<g class="node" data-id="${n.id}" style="cursor:move">${g}</g>`;
-}
-function borderPoint(n, tx, ty) {
-  const {w, h} = measure(n), cx = n.x + w / 2, cy = n.y + h / 2, dx = tx - cx, dy = ty - cy;
-  if (!dx && !dy) return [cx, cy];
-  if (n.type === 'usecase' || n.type === 'initial' || n.type === 'final') {
-    const a = w / 2, b = h / 2, t = 1 / Math.sqrt((dx * dx) / (a * a) + (dy * dy) / (b * b)); return [cx + dx * t, cy + dy * t];
-  }
-  const sx = dx ? (w / 2) / Math.abs(dx) : Infinity, sy = dy ? (h / 2) / Math.abs(dy) : Infinity, s = Math.min(sx, sy);
-  return [cx + dx * s, cy + dy * s];
-}
-let _curEdges = [];
-const D_edges_ref = () => _curEdges;
-function edgeSVG(e, nodes, sel) {
-  const a = nodes.find(n => n.id === e.from), b = nodes.find(n => n.id === e.to); if (!a || !b) return '';
-  const ma = measure(a), mb = measure(b);
-  let [x1, y1] = borderPoint(a, b.x + mb.w / 2, b.y + mb.h / 2), [x2, y2] = borderPoint(b, a.x + ma.w / 2, a.y + ma.h / 2);
-  if (e.from !== e.to && D_edges_ref(nodes).some(o => o !== e && o.from === e.to && o.to === e.from)) {
-    const an = Math.atan2(y2 - y1, x2 - x1), ox = -Math.sin(an) * 9, oy = Math.cos(an) * 9;
-    x1 += ox; y1 += oy; x2 += ox; y2 += oy;
-  }
-  let d = `M${x1},${y1} L${x2},${y2}`, lx = (x1 + x2) / 2, ly = (y1 + y2) / 2;
-  if (e.from === e.to) { // autotransição
-    const {w} = ma; x1 = a.x + w * .65; y1 = a.y; x2 = a.x + w * .35; y2 = a.y;
-    d = `M${x1},${y1} C${x1 + 10},${y1 - 50} ${x2 - 10},${y2 - 50} ${x2},${y2}`; lx = (x1 + x2) / 2; ly = y1 - 44;
-  }
-  const col = sel ? '#2f5bea' : '#14213d';
-  const dash = ['include', 'extend', 'dep', 'real'].includes(e.type) ? 'stroke-dasharray="6 4"' : '';
-  let mk = '';
-  if (['include', 'extend', 'dep', 'trans'].includes(e.type) || (e.type === 'assoc' && e.nav)) mk = 'marker-end="url(#mArrow)"';
-  if (e.type === 'gen' || e.type === 'real') mk = 'marker-end="url(#mTri)"';
-  if (e.type === 'agg') mk = 'marker-start="url(#mDia)"';
-  if (e.type === 'comp') mk = 'marker-start="url(#mDiaF)"';
-  let label = e.type === 'include' ? '«include»' : e.type === 'extend' ? '«extend»' : (e.label || '');
-  const ang = Math.atan2(y2 - y1, x2 - x1), off = 14, nx = -Math.sin(ang) * off, ny = Math.cos(ang) * off;
-  const mult = (m, px, py, k) => m ? `<text x="${px + Math.cos(ang) * 18 * k + nx * .9}" y="${py + Math.sin(ang) * 18 * k + ny * .9 + 4}" text-anchor="middle" font-size="12" font-family="JetBrains Mono,monospace">${esc(m)}</text>` : '';
-  return `<g class="edge" data-id="${e.id}" style="cursor:pointer"><path d="${d}" stroke="transparent" stroke-width="14" fill="none"/>
-    <path d="${d}" stroke="${col}" stroke-width="${sel ? 2.4 : 1.5}" fill="none" ${dash} ${mk}/>
-    ${label ? `<text x="${lx + nx}" y="${ly + ny + 4}" text-anchor="middle" font-size="12" style="paint-order:stroke" stroke="#fbfcfe" stroke-width="4" fill="#14213d">${esc(label)}</text>` : ''}
-    ${mult(e.m1, x1, y1, 1)}${mult(e.m2, x2, y2, -1)}</g>`;
-}
-function renderDiagram(d, selId) {
-  _curEdges = d.edges;
-  const nodes = [...d.nodes].sort((p, q) => (q.type === 'boundary') - (p.type === 'boundary'));
-  return DEFS + nodes.filter(n => n.type === 'boundary').map(n => nodeSVG(n, n.id === selId)).join('') +
-    d.edges.map(e => edgeSVG(e, d.nodes, e.id === selId)).join('') +
-    nodes.filter(n => n.type !== 'boundary').map(n => nodeSVG(n, n.id === selId)).join('');
-}
-const svgFont = 'font-family="Inter,system-ui,sans-serif" fill="#14213d"';
-
-/* ===================== EXERCÍCIOS ===================== */
-// helpers p/ montar soluções
-let _id = 0; const N = (type, name, x, y, extra = {}) => ({id: 'n' + (++_id), type, name, x, y, ...extra});
-function sol(nodes, rels) { // rels: [type, fromName, toName, extra]
-  const byName = nm => nodes.find(n => n.name === nm);
-  return {nodes, edges: rels.map(([type, f, t, ex = {}]) => ({id: 'e' + (++_id), type, from: byName(f).id, to: byName(t).id, ...ex}))};
-}
-const EX = [
- {id: 'uc1', kind: 'uc', title: 'Casos de uso 1 — Biblioteca',
-  task: 'O <b>Aluno</b> pode <b>consultar o acervo</b>. O <b>Bibliotecário</b> registra o <b>empréstimo de livro</b> e a <b>devolução de livro</b>. Todo empréstimo <b>sempre</b> verifica a <b>situação do aluno</b> (pendências). Na devolução, <b>se houver atraso</b>, o sistema <b>calcula a multa</b>. Desenhe a fronteira "Sistema de Biblioteca".',
-  req: {nodes: [['actor', 'aluno'], ['actor', 'bibliotecario'], ['usecase', 'acervo'], ['usecase', 'emprest'], ['usecase', 'devol'], ['usecase', 'situacao'], ['usecase', 'multa'], ['boundary', 'biblioteca']],
-        edges: [['assoc', 'aluno', 'acervo'], ['assoc', 'bibliotecario', 'emprest'], ['assoc', 'bibliotecario', 'devol'], ['include', 'emprest', 'situacao'], ['extend', 'multa', 'devol']]},
-  sol: () => sol([N('boundary', 'Sistema de Biblioteca', 200, 20, {w: 470, h: 500}), N('actor', 'Aluno', 70, 70), N('actor', 'Bibliotecário', 770, 250),
-    N('usecase', 'Consultar acervo', 260, 80), N('usecase', 'Emprestar livro', 450, 190), N('usecase', 'Verificar situação do aluno', 220, 300), N('usecase', 'Devolver livro', 450, 400), N('usecase', 'Calcular multa', 250, 440)],
-    [['assoc', 'Aluno', 'Consultar acervo'], ['assoc', 'Bibliotecário', 'Emprestar livro'], ['assoc', 'Bibliotecário', 'Devolver livro'], ['include', 'Emprestar livro', 'Verificar situação do aluno'], ['extend', 'Calcular multa', 'Devolver livro']])},
- {id: 'uc2', kind: 'uc', title: 'Casos de uso 2 — App de delivery',
-  task: 'O <b>Cliente</b> <b>faz pedido</b>; ao fazer o pedido o sistema <b>sempre realiza o pagamento</b>, que é processado pelo ator externo <b>Gateway de pagamento</b>. <b>Opcionalmente</b>, o cliente pode <b>aplicar cupom</b> durante o pedido. O <b>Restaurante</b> <b>aceita o pedido</b>. O <b>Cliente VIP</b> é um tipo de Cliente (generalização).',
-  req: {nodes: [['actor', 'cliente'], ['actor', 'restaurante'], ['actor', 'gateway'], ['actor', 'vip'], ['usecase', 'fazer'], ['usecase', 'pagamento'], ['usecase', 'cupom'], ['usecase', 'aceitar']],
-        edges: [['assoc', 'cliente', 'fazer'], ['include', 'fazer', 'pagamento'], ['assoc', 'gateway', 'pagamento'], ['extend', 'cupom', 'fazer'], ['assoc', 'restaurante', 'aceitar'], ['gen', 'vip', 'cliente']]},
-  sol: () => sol([N('boundary', 'App de Delivery', 220, 20, {w: 440, h: 500}), N('actor', 'Cliente', 70, 120), N('actor', 'Cliente VIP', 70, 330), N('actor', 'Restaurante', 770, 90), N('actor', 'Gateway de pagamento', 760, 330),
-    N('usecase', 'Fazer pedido', 300, 150), N('usecase', 'Realizar pagamento', 380, 350), N('usecase', 'Aplicar cupom', 470, 240), N('usecase', 'Aceitar pedido', 440, 70)],
-    [['assoc', 'Cliente', 'Fazer pedido'], ['include', 'Fazer pedido', 'Realizar pagamento'], ['assoc', 'Gateway de pagamento', 'Realizar pagamento'], ['extend', 'Aplicar cupom', 'Fazer pedido'], ['assoc', 'Restaurante', 'Aceitar pedido'], ['gen', 'Cliente VIP', 'Cliente']])},
- {id: 'cl1', kind: 'cl', title: 'Classes 1 — Loja virtual',
-  task: 'Um <b>Cliente</b> (nome, cpf) faz <b>zero ou muitos</b> <b>Pedidos</b> (data, status); cada pedido é de <b>exatamente um</b> cliente. Um Pedido é <b>composto</b> de <b>um ou mais</b> <b>ItemPedido</b> (quantidade) — o item não existe sem o pedido. Cada ItemPedido refere-se a <b>um Produto</b> (nome, preco). Pedido tem o método <code>+ calcularTotal(): double</code>.',
-  req: {nodes: [['class', 'cliente'], ['class', 'pedido'], ['class', 'itempedido'], ['class', 'produto']],
-        edges: [['assoc', 'cliente', 'pedido', {m: ['1', '*']}], ['comp', 'pedido', 'itempedido', {m: ['1', '1..*']}], ['assoc', 'itempedido', 'produto']],
-        extra: [['method', 'pedido', 'calculartotal']]},
-  sol: () => sol([N('class', 'Cliente', 40, 60, {attrs: '- nome: String\n- cpf: String', methods: ''}), N('class', 'Pedido', 360, 60, {attrs: '- data: Date\n- status: String', methods: '+ calcularTotal(): double'}),
-    N('class', 'ItemPedido', 360, 330, {attrs: '- quantidade: int', methods: '+ subtotal(): double'}), N('class', 'Produto', 690, 330, {attrs: '- nome: String\n- preco: double', methods: ''})],
-    [['assoc', 'Cliente', 'Pedido', {m1: '1', m2: '0..*', label: 'faz'}], ['comp', 'Pedido', 'ItemPedido', {m1: '1', m2: '1..*'}], ['assoc', 'ItemPedido', 'Produto', {m1: '0..*', m2: '1'}]])},
- {id: 'cl2', kind: 'cl', title: 'Classes 2 — Universidade',
-  task: '<b>Funcionario</b> é <b>abstrata</b> (nome, salario). <b>Professor</b> (titulacao) e <b>Tecnico</b> (setor) <b>herdam</b> de Funcionario. Um <b>Departamento</b> <b>agrega</b> vários funcionários (o funcionário continua existindo se o departamento for extinto). <b>Professor</b> e <b>Disciplina</b> têm relação muitos-para-muitos.',
-  req: {nodes: [['class', 'funcionario'], ['class', 'professor'], ['class', 'tecnico'], ['class', 'departamento'], ['class', 'disciplina']],
-        edges: [['gen', 'professor', 'funcionario'], ['gen', 'tecnico', 'funcionario'], ['agg', 'departamento', 'funcionario'], ['assoc', 'professor', 'disciplina', {m: ['*', '*']}]],
-        extra: [['abstract', 'funcionario']]},
-  sol: () => sol([N('class', 'Funcionario', 340, 40, {abstract: true, attrs: '# nome: String\n# salario: double', methods: '+ calcularSalario(): double'}), N('class', 'Departamento', 700, 50, {attrs: '- sigla: String', methods: ''}),
-    N('class', 'Professor', 170, 300, {attrs: '- titulacao: String', methods: ''}), N('class', 'Tecnico', 520, 300, {attrs: '- setor: String', methods: ''}), N('class', 'Disciplina', 120, 460, {attrs: '- codigo: String', methods: ''})],
-    [['gen', 'Professor', 'Funcionario'], ['gen', 'Tecnico', 'Funcionario'], ['agg', 'Departamento', 'Funcionario', {m1: '1', m2: '*'}], ['assoc', 'Professor', 'Disciplina', {m1: '*', m2: '*', label: 'leciona'}]])},
- {id: 'st1', kind: 'st', title: 'Estados 1 — Pedido',
-  task: 'Um pedido começa <b>Aberto</b>. Com o evento <code>pagar</code> vai para <b>Pago</b>; com <code>enviar</code> vai para <b>Enviado</b>; com <code>confirmarEntrega</code> vai para <b>Entregue</b> e termina (estado final). De Aberto, o evento <code>cancelar</code> leva a <b>Cancelado</b>. De Pago também é possível <code>cancelar</code>, gerando a ação <code>estornar</code>. Cancelado também termina.',
-  req: {nodes: [['initial', ''], ['state', 'aberto'], ['state', 'pago'], ['state', 'enviado'], ['state', 'entregue'], ['state', 'cancelado'], ['final', '']],
-        edges: [['trans', '@initial', 'aberto'], ['trans', 'aberto', 'pago', {lab: 'pagar'}], ['trans', 'pago', 'enviado', {lab: 'enviar'}], ['trans', 'enviado', 'entregue', {lab: 'entrega'}], ['trans', 'aberto', 'cancelado', {lab: 'cancelar'}], ['trans', 'pago', 'cancelado', {lab: 'estornar'}], ['trans', 'entregue', '@final'], ['trans', 'cancelado', '@final']]},
-  sol: () => sol([N('initial', 'início', 30, 110), N('state', 'Aberto', 90, 96), N('state', 'Pago', 280, 96), N('state', 'Enviado', 460, 96), N('state', 'Entregue', 740, 96), N('state', 'Cancelado', 260, 330), N('final', 'fim', 780, 340)],
-    [['trans', 'início', 'Aberto'], ['trans', 'Aberto', 'Pago', {label: 'pagar'}], ['trans', 'Pago', 'Enviado', {label: 'enviar'}], ['trans', 'Enviado', 'Entregue', {label: 'confirmarEntrega'}], ['trans', 'Aberto', 'Cancelado', {label: 'cancelar'}], ['trans', 'Pago', 'Cancelado', {label: 'cancelar / estornar'}], ['trans', 'Entregue', 'fim'], ['trans', 'Cancelado', 'fim']])},
- {id: 'st2', kind: 'st', title: 'Estados 2 — Porta com fechadura',
-  task: 'A porta começa <b>Fechada</b>. <code>abrir</code> → <b>Aberta</b>; <code>fechar</code> → Fechada. Estando Fechada, <code>trancar [possui chave]</code> → <b>Trancada</b>; <code>destrancar [possui chave]</code> → Fechada. Na Aberta, coloque <code>entry / acenderLuz</code> (escreva no campo "atividades internas" do estado).',
-  req: {nodes: [['initial', ''], ['state', 'fechada'], ['state', 'aberta'], ['state', 'trancada']],
-        edges: [['trans', '@initial', 'fechada'], ['trans', 'fechada', 'aberta', {lab: 'abrir'}], ['trans', 'aberta', 'fechada', {lab: 'fechar'}], ['trans', 'fechada', 'trancada', {lab: 'chave'}], ['trans', 'trancada', 'fechada', {lab: 'chave'}]],
-        extra: [['internal', 'aberta', 'entry']]},
-  sol: () => sol([N('initial', 'início', 60, 250), N('state', 'Fechada', 200, 236), N('state', 'Aberta', 560, 80, {attrs: 'entry / acenderLuz'}), N('state', 'Trancada', 560, 400)],
-    [['trans', 'início', 'Fechada'], ['trans', 'Fechada', 'Aberta', {label: 'abrir'}], ['trans', 'Aberta', 'Fechada', {label: 'fechar'}], ['trans', 'Fechada', 'Trancada', {label: 'trancar [possui chave]'}], ['trans', 'Trancada', 'Fechada', {label: 'destrancar [possui chave]'}]])},
- {id: 'free', kind: 'all', title: 'Modo livre — desenhe o que quiser', task: 'Use todas as ferramentas para treinar qualquer diagrama (casos de uso, classes ou estados). Não há correção automática neste modo.', req: null, sol: () => ({nodes: [], edges: []})},
+/* ================= MENU / ROTAS ================= */
+const VIEWS = [
+  ['inicio', 'Início', 'Visão geral e atalhos'],
+  ['simulado', 'Simulado', '60 questões · estudo ou prova'],
+  ['videos', 'Vídeos', 'Aulas no YouTube por assunto'],
+  ['decodificador', 'Decodificador', 'Bits → inteiro, float, RISC-V'],
+  ['memoria', 'Mapa da memória', 'TEXT, DATA, BSS, HEAP, STACK'],
+  ['resumo', 'Resumo', 'Fórmulas e pegadinhas'],
 ];
-// ajustar posições das arestas sobrepostas em st2 (fechada<->aberta) com rótulos distintos – aceitável
+$('#menuList').innerHTML = VIEWS.map(([id, t, d], i) => `<a href="#${id}" data-v="${id}"><span class="n">0${i}</span><span><b>${t}</b><small>${d}</small></span></a>`).join('');
+const openMenu = () => document.body.classList.add('menu-open'), closeMenu = () => document.body.classList.remove('menu-open');
+$('#openMenu').onclick = openMenu; $('#closeMenu').onclick = closeMenu; $('#scrim').onclick = closeMenu;
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+function route() {
+  const id = (location.hash || '#inicio').slice(1);
+  const v = VIEWS.some(x => x[0] === id) ? id : 'inicio';
+  $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + v));
+  $$('#menuList a').forEach(a => a.classList.toggle('on', a.dataset.v === v));
+  closeMenu(); window.scrollTo({top: 0});
+  if (v === 'simulado') showQ();
+}
+window.addEventListener('hashchange', route);
 
-/* ===================== EDITOR ===================== */
-let cur = EX[0], D = {nodes: [], edges: []}, selId = null, linkType = null, linkFrom = null, drag = null;
-const LS = 'er-uml-v1';
-let store = {}; try { store = JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) {}
-const persist = () => { try { store[cur.id] = D; localStorage.setItem(LS, JSON.stringify(store)); $('#saveInfo').textContent = 'salvo automaticamente'; } catch (e) {} };
-const uid = () => 'u' + Math.random().toString(36).slice(2, 9);
+/* ================= QUESTÕES ================= */
+const Q = [
+/* ---- Computação, pensamento computacional, abstração ---- */
+{t:'Computação', q:'A frase "a raiz quadrada de <i>x</i> é o número <i>y</i> tal que <i>y·y = x</i> e <i>y ≥ 0</i>" é um exemplo de:', o:['Conhecimento declarativo: diz o que é a solução, mas não como obtê-la','Conhecimento imperativo: descreve uma sequência de passos','Uma heurística: dá uma resposta aproximada sem garantia','Um algoritmo, pois define a raiz de forma única'], a:0, e:'Declarativo = afirmação de fato ("o que é"). O método de Herão (chutar, melhorar com (g + x/g)/2, repetir) é o conhecimento <b>imperativo</b> ("como fazer") correspondente.'},
+{t:'Computação', q:'No programa de temperaturas da revisão 2, separar o problema em <code>registrar_temperaturas()</code>, <code>analisar_temperaturas()</code> e <code>exibir_relatorio()</code> aplica principalmente qual pilar do pensamento computacional?', o:['Decomposição','Reconhecimento de padrões','Abstração por generalização','Heurística'], a:0, e:'Decomposição = quebrar um problema grande em subproblemas menores e independentes. Abstração seria esconder detalhes (ex.: usar <code>get_double()</code> sem saber como ela lê do teclado).'},
+{t:'Computação', q:'Um mapa de metrô mostra estações e conexões, mas ignora distâncias reais, curvas e ruas. Isso é um exemplo de:', o:['Abstração por remoção de detalhes','Abstração por generalização','Decomposição','Reconhecimento de padrões'], a:0, e:'Remove-se o que não importa para o objetivo (saber onde trocar de linha). Generalização seria, por exemplo, criar uma única função <code>media(vetor, n)</code> que serve para salários, notas e temperaturas.'},
+{t:'Computação', q:'Em C, com <code>int</code> de 32 bits em complemento de 2, o que acontece em <code>int x = 2147483647; x = x + 1;</code>?', o:['Overflow com sinal: é comportamento indefinido em C; na prática costuma resultar em −2147483648','x passa a valer 2147483648, pois o C promove para long automaticamente','O compilador sempre gera erro de compilação','x vale 0, pois todos os bits viram zero'], a:0, e:'"int não é ℤ": o tipo tem faixa finita [−2³¹, 2³¹−1]. 0x7FFFFFFF + 1 = 0x80000000, cujo padrão em C2 é −2³¹. Para <i>signed</i>, o padrão C classifica como comportamento indefinido.'},
+{t:'Computação', q:'Qual camada é a interface entre o hardware e o software de mais baixo nível, definindo instruções, registradores visíveis e modos de endereçamento?', o:['A ISA (arquitetura do conjunto de instruções)','A microarquitetura','O sistema operacional','O compilador'], a:0, e:'A ISA é o "contrato": o software (compilador/SO) gera instruções da ISA e qualquer microarquitetura que a implemente consegue executá-las.'},
+/* ---- Representação de dados ---- */
+{t:'Representação de dados', q:'Em ASCII, <code>\'G\'</code> = 0x47. Qual o código de <code>\'g\'</code> e qual bit diferencia maiúsculas de minúsculas?', o:['0x67; o bit 5 (valor 32)','0x57; o bit 4 (valor 16)','0x67; o bit 6 (valor 64)','0x87; o bit 7 (MSB)'], a:0, e:'Minúscula = maiúscula + 32 = 0x47 + 0x20 = 0x67. 0x20 = 0010 0000₂, ou seja, o bit 5.'},
+{t:'Representação de dados', q:'Um arquivo-fonte em UTF-8 contém <code>char s[] = "Ação";</code>. Quanto vale <code>strlen(s)</code>?', o:['6','4','5','8'], a:0, e:'Em UTF-8, A e o ocupam 1 byte cada; ç (U+00E7) e ã (U+00E3) ocupam 2 bytes cada → 6 bytes. <code>strlen</code> conta <b>bytes</b> até o <code>\\0</code> (o vetor tem 7 bytes).'},
+{t:'Representação de dados', q:'A cor RGB <code>#00FFFF</code> e seu equivalente aproximado em CMYK são:', o:['Ciano; C=100%, M=0%, Y=0%, K=0%','Amarelo; C=0%, M=0%, Y=100%, K=0%','Magenta; C=0%, M=100%, Y=0%, K=0%','Ciano; C=0%, M=100%, Y=100%, K=0%'], a:0, e:'RGB é aditivo (luz): G+B máximos = ciano. CMYK é subtrativo (tinta): ciano puro = só tinta C.'},
+{t:'Representação de dados', q:'Uma imagem 1920×1080, RGB com 8 bits por canal e sem compressão ocupa:', o:['6 220 800 bytes (≈ 5,93 MiB)','2 073 600 bytes (≈ 1,98 MiB)','49 766 400 bytes (≈ 47,5 MiB)','8 294 400 bytes (≈ 7,91 MiB)'], a:0, e:'1920 × 1080 = 2 073 600 pixels × 3 bytes = 6 220 800 B. ÷ 2²⁰ ≈ 5,93 MiB. (8 294 400 seria com 4 bytes/pixel, RGBA.)'},
+{t:'Representação de dados', q:'Áudio PCM, 44,1 kHz, 16 bits por amostra, estéreo, com 1 minuto de duração, sem compressão, ocupa:', o:['10 584 000 bytes','5 292 000 bytes','2 646 000 bytes','84 672 000 bytes'], a:0, e:'44 100 amostras/s × 2 bytes × 2 canais × 60 s = 10 584 000 B (≈ 10,1 MiB). 84 672 000 é o valor em <b>bits</b>.'},
+/* ---- Algoritmos ---- */
+{t:'Algoritmos', q:'No pior caso, quantas comparações a busca binária faz em um vetor ordenado de 1 000 000 de elementos?', o:['Cerca de 20','Cerca de 1 000','Cerca de 500 000','Cerca de 1 000 000'], a:0, e:'A busca binária é O(log₂ n): log₂(10⁶) ≈ 19,93 → 20 comparações. A busca linear faria até 10⁶.'},
+{t:'Algoritmos', q:'Qual a complexidade do trecho abaixo?<pre>for (int i = 0; i &lt; n; i++)\n    for (int j = i; j &lt; n; j++)\n        soma += v[i] * v[j];</pre>', o:['O(n²)','O(n log n)','O(n)','O(2ⁿ)'], a:0, e:'O laço interno roda n, n−1, …, 1 vezes: n(n+1)/2 iterações. Constantes e termos menores são descartados → O(n²).'},
+{t:'Algoritmos', q:'Sobre heurísticas, é correto afirmar:', o:['Buscam uma solução boa em tempo aceitável, sem garantia de que seja a ótima','Sempre encontram a solução ótima, porém mais rápido que a força bruta','São algoritmos de complexidade O(1)','Só podem ser representadas por fluxograma, nunca por pseudocódigo'], a:0, e:'Heurística = "regra prática". Ex.: no caixeiro-viajante, "vá sempre para a cidade mais próxima" é rápida, mas pode não dar a menor rota.'},
+/* ---- Bases numéricas ---- */
+{t:'Bases numéricas', q:'O número 0xD6B em octal e em decimal é:', o:['6553₈ e 3435₁₀','6533₈ e 3435₁₀','6553₈ e 3445₁₀','1553₈ e 3435₁₀'], a:0, e:'0xD6B = 1101 0110 1011₂. Agrupando de 3 em 3 a partir da direita: 110 101 101 011 = 6 5 5 3. Decimal: 13·256 + 6·16 + 11 = 3328 + 96 + 11 = 3435.'},
+{t:'Bases numéricas', q:'357₁₀ em hexadecimal e em binário é:', o:['0x165 = 1 0110 0101₂','0x165 = 1 0101 0110₂','0x157 = 1 0101 0111₂','0x1A5 = 1 1010 0101₂'], a:0, e:'357 ÷ 16 = 22 resto 5; 22 ÷ 16 = 1 resto 6; 1 → 0x165. Cada dígito hexa vira 4 bits: 1 | 0110 | 0101.'},
+{t:'Bases numéricas', q:'23,375₁₀ em binário é:', o:['10111,011','10111,101','10110,011','10111,0011'], a:0, e:'23 = 10111₂. Parte fracionária: 0,375·2 = 0,75 (0); 0,75·2 = 1,5 (1); 0,5·2 = 1,0 (1) → 0,011.'},
+/* ---- Inteiros, faixas, overflow ---- */
+{t:'Inteiros e overflow', q:'Em 8 bits, somando 0x7F + 0x01 e interpretando como inteiros com sinal (C2):', o:['Resultado 0x80 = −128: há overflow com sinal, mas não há carry-out','Resultado 0x80 = 128: não há overflow','Resultado 0x00 com carry-out = 1','Resultado 0x80 = −0'], a:0, e:'127 + 1 = 128 não cabe em [−128, 127]. Os bits 0111 1111 + 1 = 1000 0000 (MSB virou 1 → negativo). Somar dois positivos e obter negativo = overflow. Não houve "vai-um" para fora do bit 7.'},
+{t:'Inteiros e overflow', q:'Em 8 bits sem sinal, 200 + 100 resulta em:', o:['44, com carry-out = 1','300','255 (satura)','−212'], a:0, e:'300 − 256 = 44. Para unsigned, o "estouro" aparece como carry-out do MSB. A aritmética é módulo 2⁸.'},
+{t:'Inteiros e overflow', q:'A palavra de 32 bits 0xFFFFFF9C vale, respectivamente, como <i>unsigned</i> e como <i>signed</i> (C2):', o:['4 294 967 196 e −100','4 294 967 196 e −99','4 294 967 195 e −100','−100 e 4 294 967 196'], a:0, e:'Signed: inverter e somar 1 → 0x00000063 + 1 = 0x64 = 100 → −100. Unsigned: 2³² − 100 = 4 294 967 196.'},
+{t:'Inteiros e overflow', q:'Interpretando a sequência A da revisão 1 (<code>1011 1111 1100 0101 0010 0010 1000 0011</code>) como inteiro de 32 bits em complemento de 2, o valor é:', o:['−1 077 599 613','3 217 367 683','−1 077 599 612','−1 069 863 555'], a:0, e:'0xBFC52283 = 3 217 367 683 sem sinal. Como o MSB = 1: 3 217 367 683 − 2³² = −1 077 599 613. (3 217 367 683 é a leitura <i>unsigned</i>.)'},
+/* ---- Negativos ---- */
+{t:'Números negativos', q:'Representando −5 em 8 bits, qual linha está <b>totalmente</b> correta (sinal-magnitude / C1 / C2 / enviesada com viés 127)?', o:['10000101 / 11111010 / 11111011 / 01111010','10000101 / 11111011 / 11111010 / 10000100','11111011 / 11111010 / 10000101 / 01111010','10000101 / 11111010 / 11111011 / 10000100'], a:0, e:'S/M: bit de sinal + 0000101. C1: inverte 00000101. C2: C1 + 1. Enviesada: armazena −5 + 127 = 122 = 01111010.'},
+{t:'Números negativos', q:'Por que a faixa de 8 bits em C2 é [−128, 127] e em sinal-magnitude é [−127, 127]?', o:['Sinal-magnitude (e C1) têm duas representações do zero (+0 e −0); C2 tem um só zero, sobrando um padrão para −128','Porque C2 usa 9 bits internamente','Porque em sinal-magnitude o MSB não pode ser 1','Porque C2 só representa números pares negativos'], a:0, e:'Com 256 padrões: S/M gasta 00000000 e 10000000 com o zero. Em C2, 10000000 representa −128 e o zero é único.'},
+{t:'Números negativos', q:'Em representação enviesada de 8 bits com viés 127, o padrão 10000011 representa:', o:['4','131','−4','3'], a:0, e:'Valor = armazenado − viés = 131 − 127 = 4. É exatamente como o expoente do IEEE-754 de precisão simples é guardado.'},
+/* ---- IEEE-754 / ponto fixo ---- */
+{t:'Ponto flutuante', q:'Qual a representação de −6,75 em IEEE-754 precisão simples?', o:['0xC0D80000','0xC0B60000','0x40D80000','0xC1580000'], a:0, e:'6,75 = 110,11₂ = 1,1011 × 2². Sinal 1; expoente 2 + 127 = 129 = 1000 0001; fração 1011 000…. Bits: 1 10000001 10110000… = 1100 0000 1101 1000 0… = 0xC0D80000.'},
+{t:'Ponto flutuante', q:'O padrão IEEE-754 simples 0xBF400000 vale:', o:['−0,75','−1,5','−0,375','0,75'], a:0, e:'1011 1111 0100 0…: sinal 1; expoente 0111 1110 = 126 → real −1; fração 100… = 0,5. Valor = −1,5 × 2⁻¹ = −0,75.'},
+{t:'Ponto flutuante', q:'Interpretando a sequência B da revisão 1 (<code>0xC0052303</code>) como IEEE-754 simples, temos:', o:['s = 1; expoente armazenado 128; expoente real 1; valor ≈ −2,080262','s = 1; expoente armazenado 128; expoente real 1; valor ≈ −1,040131','s = 1; expoente armazenado 127; expoente real 0; valor ≈ −1,040131','s = 0; expoente armazenado 128; expoente real 1; valor ≈ 2,080262'], a:0, e:'1 | 1000 0000 | 000 0101 0010 0011 0000 0011. Expoente 128 − 127 = 1. Fração = 0x052303/2²³ ≈ 0,040131 → significando 1,040131 × 2¹ ≈ −2,080262.'},
+{t:'Ponto flutuante', q:'No IEEE-754 simples, um padrão com expoente armazenado 1111 1111 e fração diferente de zero representa:', o:['NaN (Not a Number)','±Infinito','Número subnormal','O maior número finito'], a:0, e:'Expoente todo 1: fração = 0 → ±∞; fração ≠ 0 → NaN. Expoente todo 0: fração = 0 → ±0; fração ≠ 0 → subnormal.'},
+{t:'Ponto flutuante', q:'Por que, em C, <code>0.1 + 0.2 == 0.3</code> resulta falso com <code>double</code>?', o:['0,1, 0,2 e 0,3 têm expansão binária infinita (periódica) e são arredondados para a representação finita mais próxima','Porque o C converte os valores para int antes de comparar','Porque o operador == não funciona com double','Porque 0,3 não é representável, mas 0,1 e 0,2 são exatos'], a:0, e:'0,1₁₀ = 0,000110011001100…₂ (dízima). Com 52 bits de fração, guarda-se uma aproximação; o erro acumulado faz a soma ser 0,30000000000000004. Representação finita de números infinitos.'},
+{t:'Ponto flutuante', q:'Em ponto fixo Q4.4 sem sinal (4 bits inteiros, 4 fracionários), o padrão 0110 1010 vale:', o:['6,625','6,10','106','6,5'], a:0, e:'0110 = 6; ,1010 = 1/2 + 1/8 = 0,625. Equivalente: 106 / 2⁴ = 6,625.'},
+/* ---- BCD e extensão de sinal ---- */
+{t:'BCD e extensão de sinal', q:'O número 2026 em BCD (8421) é:', o:['0010 0000 0010 0110','0111 1110 1010','0010 0000 0010 0101','0000 0111 1110 1010'], a:0, e:'BCD codifica cada dígito decimal em 4 bits: 2→0010, 0→0000, 2→0010, 6→0110. (0111 1110 1010 é 2026 em binário puro = 0x7EA.) Padrões 1010–1111 são inválidos em BCD.'},
+{t:'BCD e extensão de sinal', q:'O byte 0xA5 está na memória. Após <code>lb</code> e após <code>lbu</code>, o registrador de 32 bits contém:', o:['lb: 0xFFFFFFA5 (−91); lbu: 0x000000A5 (165)','lb: 0x000000A5 (165); lbu: 0xFFFFFFA5 (−91)','Ambos 0x000000A5','lb: 0x800000A5; lbu: 0x000000A5'], a:0, e:'<code>lb</code> faz extensão de sinal: copia o MSB (1) para os 24 bits superiores. <code>lbu</code> faz extensão com zeros. 0xA5 = 10100101; como C2 de 8 bits: −91.'},
+/* ---- Arquitetura ---- */
+{t:'Arquitetura', q:'Num sistema little-endian, <code>sw</code> grava 0x12345678 no endereço 0x1000. O byte no endereço 0x1000 e o byte em 0x1003 são:', o:['0x78 e 0x12','0x12 e 0x78','0x56 e 0x34','0x78 e 0x56'], a:0, e:'Little-endian guarda o byte menos significativo no menor endereço: 0x1000=78, 0x1001=56, 0x1002=34, 0x1003=12. RISC-V é little-endian.'},
+{t:'Arquitetura', q:'Sobre as arquiteturas de von Neumann e Harvard, é correto afirmar:', o:['Von Neumann usa uma única memória/barramento para instruções e dados (gargalo de von Neumann); Harvard separa memória de instruções e de dados','Harvard usa uma única memória para dados e instruções','Von Neumann não permite programas armazenados em memória','Harvard impede o uso de registradores'], a:0, e:'Em von Neumann, buscar instrução e acessar dado disputam o mesmo caminho. Harvard permite buscar instrução e dado ao mesmo tempo (muito usada nas caches L1 separadas I/D).'},
+{t:'Arquitetura', q:'Qual característica é típica de RISC (como RISC-V) e não de CISC (como x86)?', o:['Instruções de tamanho fixo e arquitetura load/store: só load/store acessam a memória','Instruções de tamanho variável com muitos modos de endereçamento','Instruções aritméticas que operam diretamente sobre a memória','Poucos registradores de uso geral'], a:0, e:'No RISC-V, toda instrução base tem 32 bits e a ULA só opera com registradores; dados entram/saem por <code>lw</code>/<code>sw</code>.'},
+{t:'Arquitetura', q:'Um programa executa 2×10⁹ instruções com CPI médio 1,5 num processador de 3 GHz. O tempo de CPU é:', o:['1,0 s','0,5 s','2,0 s','4,5 s'], a:0, e:'Tempo = nº instruções × CPI × período = 2×10⁹ × 1,5 / (3×10⁹ Hz) = 1,0 s.'},
+{t:'Arquitetura', q:'80% do tempo de um programa é gasto numa parte que fica 4× mais rápida. Pela Lei de Amdahl, o ganho total é:', o:['2,5×','4×','3,2×','5×'], a:0, e:'Speedup = 1 / (0,2 + 0,8/4) = 1 / 0,4 = 2,5. A parte não acelerada limita o ganho ("torne o caso comum rápido").'},
+/* ---- RISC-V ---- */
+{t:'RISC-V', q:'O código de máquina de <code>sub x7, x5, x6</code> é:', o:['0x406283B3','0x006283B3','0x40628333','0x405303B3'], a:0, e:'Formato R: funct7=0100000 | rs2=00110 | rs1=00101 | funct3=000 | rd=00111 | opcode=0110011. É igual ao <code>add</code> da sequência C (0x006283B3), mudando só o funct7 (0x20).'},
+{t:'RISC-V', q:'Decodifique a instrução RISC-V 0xFE752E23:', o:['sw x7, -4(x10)','sw x10, -4(x7)','lw x7, -4(x10)','sw x7, 4060(x10)'], a:0, e:'opcode 0100011 = S (sw, funct3 = 010). rs2 = 00111 (x7), rs1 = 01010 (x10). imm[11:5] = 1111111, imm[4:0] = 11100 → 1111 1111 1100 = −4 em C2.'},
+{t:'RISC-V', q:'Decodifique a instrução 0x00812303:', o:['lw x6, 8(x2)','lw x2, 8(x6)','sw x6, 8(x2)','addi x6, x2, 8'], a:0, e:'imm[11:0] = 0000 0000 1000 = 8; rs1 = 00010 (x2/sp); funct3 = 010; rd = 00110 (x6); opcode 0000011 (load) → lw.'},
+{t:'RISC-V', q:'Após <code>addi x5, x0, -1</code>, o registrador x5 contém:', o:['0xFFFFFFFF (−1): o imediato de 12 bits é estendido com sinal','0x00000FFF (4095): o imediato é estendido com zeros','0x00000001','A instrução é inválida, pois x0 não pode ser fonte'], a:0, e:'Código 0xFFF00293. O imediato 0xFFF é estendido com sinal para 32 bits. x0 vale sempre 0 e pode ser lido normalmente.'},
+{t:'RISC-V', q:'Revisão 1, item (e): x10 = 0x20001000, mem[0x20000BFC] = 12, mem[0x20000C00] = −7. Executando A, B, C, D (<code>lw x5,-1028(x10)</code>; <code>lw x6,-1024(x10)</code>; <code>add x7,x5,x6</code>; <code>sw x7,-1020(x10)</code>), o estado final é:', o:['x5 = 12, x6 = −7, x7 = 5 e mem[0x20000C04] = 5','x5 = 12, x6 = −7, x7 = 19 e mem[0x20000C04] = 19','x5 = −7, x6 = 12, x7 = 5 e mem[0x20000C00] = 5','x5 = 12, x6 = −7, x7 = 5 e mem[0x20000C04] = 0'], a:0, e:'0x20001000 − 1028 = 0x20000BFC; −1024 → 0x20000C00; −1020 → 0x20000C04. O programa soma dois inteiros da memória e guarda a soma no endereço seguinte. x10 não muda.'},
+{t:'RISC-V', q:'Sobre os registradores do RISC-V, assinale a alternativa correta:', o:['O PC não é um dos registradores x0–x31; ele guarda o endereço da instrução atual, e o IR guarda a instrução buscada','x0 pode ser usado como acumulador comum','O PC é o registrador x1 (ra)','sp é x10 e a0 é x2'], a:0, e:'x0 = zero (escritas ignoradas), x1 = ra, x2 = sp, x10–x11 = a0–a1. PC e IR são registradores especiais, fora do banco de 32 registradores.'},
+{t:'RISC-V', q:'Se uma instrução <code>add</code> está no endereço 0x00400010, após sua execução o PC vale:', o:['0x00400014','0x00400011','0x00400018','0x00400020'], a:0, e:'Toda instrução RV32I ocupa 32 bits = 4 bytes, e a memória é endereçada por byte: PC ← PC + 4 (sem desvio).'},
+{t:'RISC-V', q:'Para fazer <code>c = a + b;</code> com <code>a</code>, <code>b</code> e <code>c</code> na memória, usando somente instruções RV32I, o mínimo necessário é:', o:['lw, lw, add, sw (4 instruções)','add direto na memória (1 instrução)','lw, add, sw (3 instruções)','addi, addi, sw (3 instruções)'], a:0, e:'Arquitetura load/store: a ULA só soma registradores. É exatamente a estrutura do programa da revisão 1 (A, B, C, D).'},
+/* ---- Compilação ---- */
+{t:'Compilação', q:'Qual sequência de comandos GCC faz a compilação passo a passo de <code>prog.c</code>?', o:['gcc -E prog.c -o prog.i → gcc -S prog.i -o prog.s → gcc -c prog.s -o prog.o → gcc prog.o -o prog','gcc -S → gcc -E → gcc -c → gcc -o','gcc -c → gcc -S → gcc -E → gcc -o','gcc -E → gcc -c → gcc -S → gcc -o'], a:0, e:'Pré-processamento (-E, gera .i) → compilação para assembly (-S, .s) → montagem (-c, objeto .o) → ligação (link) gerando o executável.'},
+{t:'Compilação', q:'O erro <code>undefined reference to `get_double\'</code> aparece em qual etapa e por quê?', o:['Na ligação (linker): a função foi declarada (protótipo no .h) mas seu código-objeto não foi ligado (faltou a biblioteca, ex.: -lCRpaic)','No pré-processador, porque o #include falhou','Na compilação, porque falta o protótipo','Na execução, porque a memória não foi alocada'], a:0, e:'Se o #include falhasse seria "No such file". Sem protótipo seria aviso/erro de compilação. "undefined reference" é sempre do linker.'},
+/* ---- Memória ---- */
+{t:'Memória', q:'Na revisão 2, <code>double correcao_sensor = 0.5;</code> (global) fica em qual segmento e como recebe o valor 0,5?', o:['DATA (RW); o 0,5 está gravado no executável e é carregado na memória quando o programa inicia','BSS; o carregador zera e depois a main atribui 0,5','STACK; recebe 0,5 quando main começa','DATA RO; por isso não pode ser alterada'], a:0, e:'Global com inicializador ≠ 0 → .data (leitura e escrita). O valor inicial vem do próprio arquivo executável. Quando o operador digita a correção, o conteúdo dessa mesma posição é sobrescrito.'},
+{t:'Memória', q:'<code>int total_alertas;</code> e <code>double soma_temperaturas;</code> (globais, sem inicializador) ficam em qual segmento e com qual valor inicial?', o:['BSS, valendo 0 (e 0.0) quando o programa inicia','DATA, com valores indeterminados (lixo)','STACK, com lixo','HEAP, valendo 0'], a:0, e:'Objetos com duração estática sem inicializador são zerados por definição da linguagem; ficam na .bss, que o SO entrega zerada. Já uma variável local automática sem inicializador tem valor indeterminado.'},
+{t:'Memória', q:'<code>static int total_analises = 0;</code> dentro de <code>analisar_temperaturas()</code> está na BSS. Se fosse <code>static int total_analises = 5;</code>, ficaria em:', o:['DATA (RW): o valor não nulo precisa estar gravado no executável','BSS também, pois é static','STACK, pois está dentro de uma função','DATA RO, pois é static'], a:0, e:'O critério é o inicializador: zero (ou nenhum) → .bss; não zero → .data. O <code>static</code> dá duração estática; o local da declaração só define o escopo.'},
+{t:'Memória', q:'O programa tenta executar <code>((double *) limites_temperatura)[0] = 1.0;</code>, sendo <code>double const limites_temperatura[2]</code> global. O que acontece tipicamente no Linux?', o:['Compila (o cast remove o const), mas é comportamento indefinido; como o vetor está em DATA RO (.rodata), a página é só leitura e o SO gera Segmentation fault','Erro de compilação obrigatório','O valor muda normalmente para 1.0','O SO copia o vetor para a pilha e altera a cópia'], a:0, e:'Atribuir diretamente <code>limites_temperatura[0] = 1.0;</code> é barrado pelo <b>compilador</b> (const). Burlando com cast, quem protege em tempo de execução é o <b>SO/hardware</b>, pois a página .rodata não tem permissão de escrita.'},
+{t:'Memória', q:'Por que o qualificador <code>const</code>, sozinho, não garante que o objeto vá para DATA RO?', o:['Um const local automático (sem static) fica na pilha: o const só proíbe modificar pelo identificador, não muda a duração de armazenamento','Porque const só vale para inteiros','Porque o linker ignora const','Porque const sempre coloca o objeto no heap'], a:0, e:'<code>void f(void){ const int x = 3; }</code> → x vive no stack frame de f. A região depende da duração de armazenamento (estática/automática/alocada); const é verificação do compilador.'},
+{t:'Memória', q:'Em <code>double *medicoes = malloc(sizeof(*medicoes) * n);</code> dentro de main(), onde ficam o ponteiro e os elementos?', o:['O ponteiro medicoes fica na STACK (frame de main); os n doubles ficam no HEAP','Ambos no HEAP','Ambos na STACK','O ponteiro no DATA e os elementos no BSS'], a:0, e:'medicoes é uma variável local automática que guarda um endereço; esse endereço aponta para um bloco no heap com n × 8 bytes.'},
+{t:'Memória', q:'Na revisão 2, <code>free(medicoes)</code> ocorre antes de <code>exibir_relatorio(qtd, resultado)</code>. Por que o relatório continua correto?', o:['Porque resultado é uma struct (na pilha de main) que recebeu por cópia média, mínima, máxima e contagens; não depende mais do bloco do heap','Porque free só marca a memória e os valores continuam lá para sempre','Porque exibir_relatorio lê as medições diretamente do heap','Porque medicoes = NULL restaura os dados'], a:0, e:'analisar_temperaturas() retorna a struct por valor. Depois disso, ninguém mais lê o vetor; usá-lo após free seria comportamento indefinido.'},
+{t:'Memória', q:'O que está errado em <code>double *registrar(size_t n){ double temperaturas[1000]; /*...*/ return temperaturas; }</code>?', o:['Retorna o endereço de um objeto automático cujo tempo de vida termina no return (ponteiro pendente); com malloc o bloco no heap continua existindo até o free','Nada: vetores locais ficam no heap','O erro é usar size_t em vez de int','O vetor vai para a BSS e é zerado'], a:0, e:'O frame de registrar() é descartado no retorno; aquele espaço da pilha será reutilizado pela próxima chamada. Ler pelo ponteiro retornado é comportamento indefinido.'},
+{t:'Memória', q:'Dentro de uma função existem <code>int contador_a = 0;</code> e <code>static int contador_b = 0;</code>. A função é chamada 5 vezes e cada contador é incrementado uma vez por chamada. Ao final da 5ª chamada:', o:['contador_a = 1 e contador_b = 5','contador_a = 5 e contador_b = 5','contador_a = 1 e contador_b = 1','contador_a = 5 e contador_b = 1'], a:0, e:'contador_a é automático (pilha): é criado e inicializado com 0 a cada chamada. contador_b tem duração estática (BSS): o inicializador vale só uma vez, antes da main; o valor persiste. Ambos têm escopo de bloco: outra função não os enxerga pelo nome.'},
+{t:'Memória', q:'<code>int contadores_a[1000000];</code> e <code>int contadores_b[1000000] = {0};</code>, ambos globais. Com GCC no Linux:', o:['Ambos vão para a BSS; o executável registra só o tamanho (≈ 4 MB cada), sem gravar os bytes zerados','contadores_a na BSS e contadores_b na DATA, ocupando 4 MB no arquivo','Ambos na DATA','Ambos na STACK'], a:0, e:'A BSS é descrita apenas por tamanho; o carregador/SO mapeia páginas zeradas. Por isso inicializar com zero não aumenta o executável.'},
+{t:'Memória', q:'Por que as instruções de <code>analisar_temperaturas()</code> não precisam ser copiadas a cada chamada?', o:['Elas ficam fixas no segmento TEXT; a chamada só salva o endereço de retorno (em ra) e muda o PC para o início da função; no retorno, o PC volta para main','Porque o SO copia a função para a pilha','Porque o compilador repete o código em cada chamada','Porque o TEXT é recarregado do disco a cada chamada'], a:0, e:'TEXT (código) é só leitura/executável e compartilhado. O que é criado por chamada é o <b>stack frame</b> (variáveis locais, registradores salvos), não o código.'},
+{t:'Memória', q:'Uma função faz <code>p = malloc(8000);</code> e retorna sem chamar <code>free(p)</code> nem devolver p. Qual a consequência?', o:['Vazamento de memória: o bloco continua reservado no heap, mas sem nenhum ponteiro para ele, até o processo terminar','O bloco é liberado automaticamente no return, como na pilha','Segmentation fault imediato','O bloco é movido para a BSS'], a:0, e:'Memória do heap tem duração "alocada": só termina com free (ou com o fim do processo). Num programa que analisa vários lotes, cada lote vazaria mais memória.'},
+{t:'Memória', q:'Considere <code>int v[4] = {10, 20, 30, 40}; int *p = v + 1;</code>. Quanto valem <code>*(p + 2)</code> e <code>p[-1]</code>?', o:['40 e 10','30 e 10','40 e 20','Erro: índice negativo é proibido em C'], a:0, e:'p aponta para v[1]. p + 2 → v[3] = 40. p[-1] = *(p − 1) → v[0] = 10 (válido, pois continua dentro do vetor).'},
+{t:'Memória', q:'Se <code>double *p</code> vale 0x1000, quanto vale <code>p + 3</code>?', o:['0x1018','0x1003','0x100C','0x1030'], a:0, e:'Aritmética de ponteiros anda em unidades do tipo apontado: 3 × sizeof(double) = 3 × 8 = 24 = 0x18 → 0x1018.'},
+];
 
-function loadEx(id) {
-  cur = EX.find(e => e.id === id); D = store[id] ? JSON.parse(JSON.stringify(store[id])) : {nodes: [], edges: []};
-  selId = null; linkType = null; linkFrom = null;
-  $('#task').innerHTML = `<b>${cur.title}.</b> ${cur.task}`;
-  const k = cur.kind;
-  const nt = Object.entries(NODE_TYPES).filter(([, v]) => k === 'all' || v.kinds.includes(k));
-  const et = Object.entries(EDGE_TYPES).filter(([, v]) => k === 'all' || v.kinds.includes(k));
-  $('#pal').innerHTML = '<h4>Adicionar</h4>' + nt.map(([t, v]) => `<button class="btn" data-add="${t}">${v.label}</button>`).join('') +
-    '<h4>Ligar (origem → destino)</h4>' + et.map(([t, v]) => `<button class="btn" data-link="${t}">${v.label}</button>`).join('');
-  $$('[data-add]').forEach(b => b.onclick = () => addNode(b.dataset.add));
-  $$('[data-link]').forEach(b => b.onclick = () => { linkType = linkType === b.dataset.link ? null : b.dataset.link; linkFrom = null; draw(); });
-  $('#report').style.display = 'none'; $('#bCheck').style.display = cur.req ? '' : 'none'; $('#bSol').style.display = cur.req ? '' : 'none';
-  draw();
+const TOPICS = [...new Set(Q.map(q => q.t))];
+let seed = 20261124; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+Q.forEach(q => { const p = q.o.map((_, i) => i).sort(() => rnd() - .5); q.o = p.map(i => q.o[i]); q.a = p.indexOf(q.a); });
+
+/* ================= VÍDEOS ================= */
+const VIDEOS = [{"topic": "Conversão de bases", "id": "6T0ivnz3APA", "title": "Conversão de Número Decimal para Qualquer Outra Base - Binário Octal Hexadecimal", "channel": "DesCOMPlica, Oliba!", "lang": "pt"}, {"topic": "Conversão de bases", "id": "Q1EFPcTE5nM", "title": "Conversão Numérica Entre Bases computacionais - Binário, Octal e Hexadecimal", "channel": "DesCOMPlica, Oliba!", "lang": "pt"}, {"topic": "Complemento de 2", "id": "_wn9jLPOWJA", "title": "13. Arquitetura de Computadores: Complemento a Dois", "channel": "Professor Pantoja", "lang": "pt"}, {"topic": "Complemento de 2", "id": "AML1F6li9Y0", "title": "Aula 7 - Complemento de 2 Números Binários com Exercícios", "channel": "IsraelDeorce", "lang": "pt"}, {"topic": "IEEE 754", "id": "ealNNf7lGoU", "title": "16. Arquitetura de Computadores: IEEE 754", "channel": "Professor Pantoja", "lang": "pt"}, {"topic": "IEEE 754", "id": "89u1I1a9Qm4", "title": "Convertendo Ponto Flutuante pra Binário + IEEE-754", "channel": "Carlos Eduardo Marciano", "lang": "pt"}, {"topic": "RISC-V", "id": "BajVAFM-MtY", "title": "RISC-V - Me Salva Linguagem Assembly: Instruções do RISC-V - Movimentação de Dados", "channel": "Prof. Santiago - Programação e Ciência", "lang": "pt"}, {"topic": "RISC-V", "id": "zOudf0VZNU8", "title": "RISC-V - Me Salva Linguagem Assembly: Representação de Instruções RV32 - Formato Tipo R", "channel": "Prof. Santiago - Programação e Ciência", "lang": "pt"}, {"topic": "Arquiteturas", "id": "DeHyRwylke0", "title": "Arquitetura de Von Neumann vs Arquitetura de Harvard - Explicação Simples com Exemplo de Instrução", "channel": "DesCOMPlica, Oliba!", "lang": "pt"}, {"topic": "Arquiteturas", "id": "-PcwML0hEEk", "title": "Aula 04 - Pt.2 - Arquitetura de Computadores - Processadores CISC vs. RISC", "channel": "Laboratório HiPES", "lang": "pt"}, {"topic": "Memória", "id": "i_0IBJkXn2M", "title": "Introdução ao funcionamento da memória Stack e Heap", "channel": "Rodrigo Mello", "lang": "pt"}, {"topic": "Memória", "id": "Rh3uNVxSTtg", "title": "Memory Organization in C | Memory layout in C | Heap | Stack | Data | Code | BSS", "channel": "Embedded System Creations", "lang": "en"}, {"topic": "Compilação GCC", "id": "kE5Mfgc3Dls", "title": "Compilação e Linkagem em Linguagem C", "channel": "Rodrigo Mello", "lang": "pt"}, {"topic": "Compilação GCC", "id": "PzsXHGVTScI", "title": "Understanding C program compilation process GCC", "channel": "kudvenkat", "lang": "en"}, {"topic": "Ponteiros em C", "id": "u5P_vryX0fo", "title": "Ponteiros em Linguagem C", "channel": "Eduardo Casavella", "lang": "pt"}, {"topic": "Ponteiros em C", "id": "r7f-aR7vgg0", "title": "Programar em  C - Introdução Ponteiros(Teoria) - Aula 60", "channel": "De aluno para aluno", "lang": "pt"}, {"topic": "Representação de dados", "id": "q5teAs_158o", "title": "O que é Codificação de Caracteres? ASCII, ISO-8859 LATIN, UNICODE UTF-8 - Explicação simples", "channel": "DesCOMPlica, Oliba!", "lang": "pt"}, {"topic": "Representação de dados", "id": "a3Y_ZvOr0K0", "title": "Representing Images in Binary", "channel": "MrBrownCS", "lang": "en"}];
+
+/* ================= HOME ================= */
+const TILES = [
+  ['simulado', 'Simulado', `${Q.length} questões com explicação, modo prova com cronômetro e nota por assunto.`, 'comece aqui', true],
+  ['videos', 'Vídeos', `${VIDEOS.length} aulas selecionadas, com player e link direto para o YouTube.`, 'youtube'],
+  ['decodificador', 'Decodificador', 'Binário → C2, IEEE-754 e instrução RISC-V. E o simulador da revisão 1.', 'ferramenta'],
+  ['memoria', 'Memória', 'Mapa interativo dos segmentos com exemplos da revisão 2.', 'revisão 2'],
+  ['resumo', 'Resumo', 'Tabelas e fórmulas para a última hora antes da prova.', 'cola'],
+];
+$('#tiles').innerHTML = TILES.map(([id, t, d, g, big], i) => `<a class="tile ${big ? 'big' : ''}" href="#${id}"><span class="n">0${i + 1}</span><span class="glyph">${g}</span><h3>${t}</h3><p>${d}</p></a>`).join('');
+function homeStats() {
+  const done = ans.filter(x => x !== null).length, ok = ans.filter((x, k) => x === Q[k].a).length;
+  $('#homeStats').innerHTML = `<span><b>${Q.length}</b>questões</span><span><b>${TOPICS.length}</b>assuntos</span><span><b>${VIDEOS.length}</b>vídeos</span><span><b>${done ? Math.round(ok / done * 100) + '%' : '—'}</b>seu aproveitamento</span>`;
 }
-function addNode(t) {
-  const names = {actor: 'Ator', usecase: 'Caso de uso', boundary: 'Sistema', class: 'Classe', state: 'Estado', initial: 'início', final: 'fim', choice: 'escolha'};
-  const n = {id: uid(), type: t, name: names[t], x: 330 + Math.random() * 120, y: 200 + Math.random() * 100};
-  if (t === 'boundary') { n.x = 200; n.y = 20; n.w = 460; n.h = 500; }
-  if (t === 'class') { n.attrs = '- atributo: tipo'; n.methods = '+ metodo(): void'; }
-  D.nodes.push(n); selId = n.id; persist(); draw();
-}
-function svgPt(ev) { const s = $('#cv'), p = s.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(s.getScreenCTM().inverse()); }
-function draw() {
-  const s = $('#cv');
-  s.innerHTML = `<g ${svgFont}>` + renderDiagram(D, selId) + '</g>';
-  if (linkFrom) { const n = D.nodes.find(x => x.id === linkFrom); if (n) { const m = measure(n); s.insertAdjacentHTML('beforeend', `<rect x="${n.x - 5}" y="${n.y - 5}" width="${m.w + 10}" height="${m.h + 10}" fill="none" stroke="#ff7a45" stroke-width="2.5" stroke-dasharray="5 3" rx="8"/>`); } }
-  $$('[data-link]').forEach(b => b.classList.toggle('on', b.dataset.link === linkType));
-  $('#hint').textContent = linkType ? (linkFrom ? `${EDGE_TYPES[linkType].label}: agora clique no DESTINO.` : `${EDGE_TYPES[linkType].label}: clique na ORIGEM.`) : 'Arraste para mover · clique para selecionar e editar à direita · Delete apaga';
-  props();
-}
-function props() {
-  const P = $('#props'); const n = D.nodes.find(x => x.id === selId), e = D.edges.find(x => x.id === selId);
-  if (n) {
-    let h = `<h4>${NODE_TYPES[n.type].label}</h4>`;
-    if (!['initial', 'final', 'choice'].includes(n.type)) h += `<label>Nome</label><input id="pName" value="${esc(n.name)}">`;
-    if (n.type === 'class') h += `<label>Atributos (um por linha)</label><textarea id="pAttrs">${esc(n.attrs)}</textarea><label>Métodos (um por linha)</label><textarea id="pMeth">${esc(n.methods)}</textarea><label><input type="checkbox" id="pAbs" ${n.abstract ? 'checked' : ''} style="width:auto"> classe abstrata (nome em itálico)</label><label>Estereótipo (ex.: interface)</label><input id="pSt" value="${esc(n.stereo || '')}">`;
-    if (n.type === 'state') h += `<label>Atividades internas (entry / do / exit)</label><textarea id="pAttrs">${esc(n.attrs || '')}</textarea>`;
-    if (n.type === 'boundary') h += `<label>Largura</label><input id="pW" type="number" value="${n.w}"><label>Altura</label><input id="pH" type="number" value="${n.h}">`;
-    P.innerHTML = h;
-    const bind = (id, f) => { const el = $('#' + id); if (el) el.oninput = () => { f(el); persist(); draw2(); }; };
-    bind('pName', el => n.name = el.value); bind('pAttrs', el => n.attrs = el.value); bind('pMeth', el => n.methods = el.value);
-    bind('pSt', el => n.stereo = el.value); bind('pW', el => n.w = +el.value); bind('pH', el => n.h = +el.value);
-    const ab = $('#pAbs'); if (ab) ab.onchange = () => { n.abstract = ab.checked; persist(); draw2(); };
-  } else if (e) {
-    const k = cur.kind, opts = Object.entries(EDGE_TYPES).filter(([, v]) => k === 'all' || v.kinds.includes(k));
-    let h = `<h4>Ligação</h4><label>Tipo</label><select id="pType">${opts.map(([t, v]) => `<option value="${t}" ${t === e.type ? 'selected' : ''}>${v.label}</option>`).join('')}</select>`;
-    if (!['include', 'extend', 'gen', 'real'].includes(e.type)) h += `<label>${e.type === 'trans' ? 'Rótulo: evento [guarda] / ação' : 'Nome da associação'}</label><input id="pLab" value="${esc(e.label || '')}">`;
-    if (['assoc', 'agg', 'comp'].includes(e.type)) h += `<label>Multiplicidade na origem</label><input id="pM1" value="${esc(e.m1 || '')}" placeholder="ex.: 1"><label>Multiplicidade no destino</label><input id="pM2" value="${esc(e.m2 || '')}" placeholder="ex.: 0..*">`;
-    h += `<button class="btn" id="pRev" style="margin-top:10px">Inverter direção</button>`;
-    P.innerHTML = h;
-    $('#pType').onchange = ev => { e.type = ev.target.value; persist(); draw(); };
-    const lb = $('#pLab'); if (lb) lb.oninput = () => { e.label = lb.value; persist(); draw2(); };
-    const m1 = $('#pM1'); if (m1) m1.oninput = () => { e.m1 = m1.value; persist(); draw2(); };
-    const m2 = $('#pM2'); if (m2) m2.oninput = () => { e.m2 = m2.value; persist(); draw2(); };
-    $('#pRev').onclick = () => { [e.from, e.to] = [e.to, e.from]; [e.m1, e.m2] = [e.m2, e.m1]; persist(); draw(); };
-  } else P.innerHTML = '<h4>Propriedades</h4><p style="color:var(--muted);font-size:13.5px">Selecione um elemento ou uma ligação para editar. Dica: comece pela paleta à esquerda.</p>';
-}
-function draw2() { const s = $('#cv'); s.innerHTML = `<g ${svgFont}>` + renderDiagram(D, selId) + '</g>'; }
-$('#cv').addEventListener('pointerdown', ev => {
-  const g = ev.target.closest('.node, .edge'); const p = svgPt(ev);
-  if (!g) { selId = null; linkFrom = null; draw(); return; }
-  const id = g.dataset.id;
-  if (g.classList.contains('node') && linkType) {
-    if (!linkFrom) { linkFrom = id; draw(); return; }
-    D.edges.push({id: uid(), type: linkType, from: linkFrom, to: id}); selId = D.edges[D.edges.length - 1].id; linkFrom = null; persist(); draw(); return;
+// registrador animado do topo
+(function hero() {
+  const samples = ['BFC52283', 'C0052303', '006283B3', 'C0752223', '406283B3', 'FFF00293', 'C0D80000', '3F800000'];
+  let k = 0; const r1 = $('#r1'), r2 = $('#r2');
+  r1.innerHTML = r2.innerHTML = '';
+  for (let i = 0; i < 32; i++) (i < 16 ? r1 : r2).insertAdjacentHTML('beforeend', `<span class="bit ${i === 0 ? 's' : i < 9 ? 'e' : ''}">0</span>`);
+  const cells = $$('#heroReg .bit');
+  function show() {
+    const v = parseInt(samples[k++ % samples.length], 16) >>> 0, b = v.toString(2).padStart(32, '0');
+    cells.forEach((c, i) => { c.textContent = b[i]; c.classList.toggle('one', b[i] === '1'); });
+    $('#heroHex').textContent = '0x' + v.toString(16).toUpperCase().padStart(8, '0');
+    const d = decodeWord(v);
+    $('#hv1').textContent = d.signed.toLocaleString('pt-BR'); $('#hv2').textContent = d.floatShort; $('#hv3').textContent = d.ins;
   }
-  selId = id;
-  if (g.classList.contains('node')) { const n = D.nodes.find(x => x.id === id); drag = {n, dx: p.x - n.x, dy: p.y - n.y}; $('#cv').setPointerCapture(ev.pointerId); }
-  draw();
-});
-$('#cv').addEventListener('pointermove', ev => { if (!drag) return; const p = svgPt(ev); drag.n.x = Math.round(p.x - drag.dx); drag.n.y = Math.round(p.y - drag.dy); draw2(); });
-$('#cv').addEventListener('pointerup', () => { if (drag) { drag = null; persist(); draw(); } });
-function delSel() { if (!selId) return; D.nodes = D.nodes.filter(n => n.id !== selId); D.edges = D.edges.filter(e => e.id !== selId && e.from !== selId && e.to !== selId); selId = null; persist(); draw(); }
-$('#bDel').onclick = delSel;
-document.addEventListener('keydown', ev => { if ((ev.key === 'Delete') && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) delSel(); if (ev.key === 'Escape') { linkType = null; linkFrom = null; draw(); } });
-$('#bClear').onclick = () => { D = {nodes: [], edges: []}; selId = null; persist(); draw(); $('#report').style.display = 'none'; };
-$('#bSol').onclick = () => { D = JSON.parse(JSON.stringify(cur.sol())); selId = null; persist(); draw(); $('#report').style.display = 'none'; };
-
-/* ---------- correção ---------- */
-const TYPE_PT = {actor: 'ator', usecase: 'caso de uso', boundary: 'fronteira do sistema', class: 'classe', state: 'estado', initial: 'estado inicial', final: 'estado final'};
-function findNode(type, key) {
-  if (key === '' || key.startsWith('@')) return D.nodes.find(n => n.type === type);
-  return D.nodes.find(n => n.type === type && norm(n.name).includes(key));
-}
-function nodeByKey(key) {
-  if (key === '@initial') return D.nodes.find(n => n.type === 'initial');
-  if (key === '@final') return D.nodes.filter(n => n.type === 'final');
-  return D.nodes.filter(n => norm(n.name).includes(key) && n.type !== 'boundary');
-}
-function check() {
-  const R = cur.req, items = [];
-  R.nodes.forEach(([t, k]) => { const ok = !!findNode(t, k); items.push([ok, `${TYPE_PT[t]}${k && !k.startsWith('@') ? ' "' + k + '…"' : ''}`]); });
-  R.edges.forEach(([t, f, to, ex = {}]) => {
-    const A = [].concat(nodeByKey(f) || []), B = [].concat(nodeByKey(to) || []);
-    const sym = t === 'assoc';
-    const cand = D.edges.filter(e => A.some(a => a && a.id === e.from) && B.some(b => b && b.id === e.to) || (sym && B.some(b => b && b.id === e.from) && A.some(a => a && a.id === e.to)));
-    const sameType = cand.filter(e => e.type === t);
-    let ok = sameType.length > 0, msg = `${EDGE_TYPES[t].label.split(' (')[0]}: ${f.replace('@', '')} → ${to.replace('@', '')}`;
-    if (!ok) {
-      const rev = D.edges.find(e => e.type === t && A.some(a => a.id === e.to) && B.some(b => b.id === e.from));
-      if (rev) msg += ' — <b>direção invertida!</b>';
-      else if (cand.length) msg += ` — existe ligação, mas o tipo deveria ser <b>${EDGE_TYPES[t].label.split(' (')[0]}</b>`;
-    }
-    if (ok && ex.lab) { const has = sameType.some(e => norm(e.label).includes(ex.lab)); if (!has) { ok = false; msg += ` — falta o rótulo "${ex.lab}…"`; } }
-    if (ok && ex.m) { const e = sameType[0]; const flip = !A.some(a => a.id === e.from); const [m1, m2] = flip ? [e.m2, e.m1] : [e.m1, e.m2];
-      const good = (s, exp) => { const v = String(s || '').replace(/\s/g, ''); return exp === '*' ? ['*', '0..*'].includes(v) : v === exp; };
-      if (!good(m1, ex.m[0]) || !good(m2, ex.m[1])) { ok = false; msg += ` — confira a multiplicidade (esperado ${ex.m[0]} … ${ex.m[1]})`; } }
-    items.push([ok, msg]);
-  });
-  (R.extra || []).forEach(([kind, k, v]) => {
-    const n = D.nodes.find(x => norm(x.name).includes(k));
-    if (kind === 'method') items.push([!!n && norm(n.methods).includes(v), `método ${v}() em ${k}`]);
-    if (kind === 'abstract') items.push([!!n && !!n.abstract, `${k} marcada como abstrata`]);
-    if (kind === 'internal') items.push([!!n && norm(n.attrs).includes(v), `atividade interna "${v} / …" no estado ${k}`]);
-  });
-  const okN = items.filter(i => i[0]).length;
-  $('#report').style.display = 'block';
-  $('#report').innerHTML = `<b>${okN}/${items.length} itens corretos</b> ${okN === items.length ? '<span class="ok">— diagrama perfeito! 🎯</span>' : '— ajuste os itens em vermelho ou clique em "Ver solução".'}<ul>` +
-    items.map(([ok, m]) => `<li class="${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'} ${m}</li>`).join('') + '</ul>';
-}
-$('#bCheck').onclick = check;
-$('#exSel').innerHTML = EX.map(e => `<option value="${e.id}">${e.title}</option>`).join('');
-$('#exSel').onchange = ev => loadEx(ev.target.value);
-loadEx('uc1');
-
-/* soluções estáticas (PDF) + mini diagramas da teoria */
-function staticSVG(d, vb = '0 0 900 560') { return `<svg class="mini" viewBox="${vb}" xmlns="${NS}"><g ${svgFont}>${renderDiagram(d, null)}</g></svg>`; }
-$('#solList').innerHTML = EX.filter(e => e.req).map(e => `<div class="solbox"><h3>${e.title}</h3><p style="font-size:13px;margin:0 0 6px">${e.task}</p>${staticSVG(e.sol())}</div>`).join('');
-(function minis() {
-  const a = sol([N('usecase', 'Sacar dinheiro', 10, 20), N('usecase', 'Validar senha', 330, 20), N('usecase', 'Devolver livro', 10, 90), N('usecase', 'Calcular multa', 330, 90)],
-    [['include', 'Sacar dinheiro', 'Validar senha'], ['extend', 'Calcular multa', 'Devolver livro']]);
-  $('#miniIncExt').innerHTML = `<g ${svgFont}>${renderDiagram(a)}</g>`;
-  const c = {nodes: [{id: 'c', type: 'class', name: 'ContaBancaria', x: 70, y: 10, attrs: '- numero: String\n- saldo: double\n/ saldoComLimite: double', methods: '+ depositar(valor: double): void\n+ sacar(valor: double): boolean'}], edges: []};
-  $('#miniClass').innerHTML = `<g ${svgFont}>${renderDiagram(c)}</g>`;
-  const box = (id, nm, x, y) => ({id, type: 'class', name: nm, x, y, attrs: '', methods: ''});
-  const r = {nodes: [box('a', 'Animal', 10, 4), box('b', 'Cachorro', 190, 4), box('c', 'Time', 10, 92), box('d', 'Jogador', 190, 92), box('e', 'Pedido', 10, 180), box('f', 'Item', 190, 180)],
-    edges: [{id: 'x1', type: 'gen', from: 'b', to: 'a', label: ''}, {id: 'x2', type: 'agg', from: 'c', to: 'd', m1: '1', m2: '*'}, {id: 'x3', type: 'comp', from: 'e', to: 'f', m1: '1', m2: '1..*'}]};
-  $('#miniRels').innerHTML = `<g ${svgFont}>${renderDiagram(r)}<text x="165" y="40" font-size="10" text-anchor="middle">herança</text><text x="165" y="128" font-size="10" text-anchor="middle">agregação</text><text x="165" y="216" font-size="10" text-anchor="middle">composição</text></g>`;
-  $('#miniRels').setAttribute('viewBox', '0 0 330 250');
-  const s = sol([N('initial', 'i', 10, 50), N('state', 'Aberto', 70, 36), N('state', 'Pago', 300, 36, {attrs: 'entry / emitirNF'}), N('final', 'f', 430, 49)],
-    [['trans', 'i', 'Aberto'], ['trans', 'Aberto', 'Pago', {label: 'pagar [saldo ok] / baixar'}], ['trans', 'Pago', 'f']]);
-  $('#miniState').innerHTML = `<g ${svgFont}>${renderDiagram(s)}</g>`;
+  show(); setInterval(show, 2600);
 })();
 
-/* ===================== CLASSIFICADOR ===================== */
-const CL = [
- ['O sistema deve permitir que o professor lance as notas dos alunos.', 'RF', 'Descreve um serviço que o usuário executa.'],
- ['A página de notas deve carregar em até 2 segundos com 500 usuários simultâneos.', 'RNF', 'Desempenho (RNF de produto) — mensurável.'],
- ['As senhas devem ser armazenadas com hash bcrypt.', 'RNF', 'Segurança (RNF de produto).'],
- ['O sistema deve emitir o histórico escolar em PDF.', 'RF', 'Funcionalidade (serviço) do sistema.'],
- ['O sistema deve estar disponível 99,5% do tempo no período letivo.', 'RNF', 'Confiabilidade/disponibilidade.'],
- ['O sistema deve tratar dados pessoais conforme a LGPD.', 'RNF', 'RNF externo (legal).'],
- ['O sistema deve ser desenvolvido em Java, padrão da empresa.', 'RNF', 'RNF organizacional (restrição de implementação).'],
- ['O sistema deve enviar e-mail ao aluno quando a nota for lançada.', 'RF', 'Comportamento do sistema em resposta a um evento.'],
- ['O sistema deve funcionar nos navegadores Chrome, Firefox e Safari.', 'RNF', 'Portabilidade/compatibilidade.'],
- ['O sistema deve permitir filtrar alunos por turma e situação.', 'RF', 'Serviço oferecido ao usuário.'],
- ['Um usuário novo deve conseguir emitir um boleto em até 3 minutos sem treinamento.', 'RNF', 'Usabilidade (mensurável).'],
- ['O sistema deve bloquear a matrícula de aluno com mensalidade em atraso.', 'RF', 'Regra de negócio implementada como funcionalidade (o sistema reage a uma condição).'],
-];
-$('#clsList').innerHTML = CL.map((c, k) => `<div class="st" id="cl${k}"><span class="txt">${k + 1}. ${c[0]}</span><span><button class="btn" data-c="${k}" data-v="RF">Funcional</button> <button class="btn" data-c="${k}" data-v="RNF">Não funcional</button></span><small></small></div>`).join('');
-$$('[data-c]').forEach(b => b.onclick = () => { const k = +b.dataset.c, ok = b.dataset.v === CL[k][1], el = $('#cl' + k);
-  el.classList.toggle('right', ok); el.classList.toggle('wrong', !ok); el.querySelector('small').innerHTML = (ok ? '✓ Correto. ' : `✗ É <b>${CL[k][1] === 'RF' ? 'funcional' : 'não funcional'}</b>. `) + CL[k][2]; });
+/* ================= SIMULADO ================= */
+let mode = 'est', ans = Q.map(() => null), finished = false, t0 = null, tick = null, cur = 0;
+const KEY = 'arq-av2-site-v2';
+try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.ans && s.ans.length === Q.length) { ans = s.ans; mode = s.mode || 'est'; finished = !!s.finished; cur = s.cur || 0; } } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ans, mode, finished, cur})); } catch (e) {} };
+$('#fTopic').innerHTML = '<option value="">Todos os assuntos</option>' + TOPICS.map(t => `<option>${t}</option>`).join('') + '<option value="__wrong">Só as que errei</option>';
+const visible = () => { const f = $('#fTopic').value; return Q.map((_, k) => k).filter(k => !f || (f === '__wrong' ? ans[k] !== null && ans[k] !== Q[k].a : Q[k].t === f)); };
+const reveal = k => (mode === 'est' && ans[k] !== null) || (mode === 'sim' && finished);
+function showQ() {
+  const vis = visible(); if (!vis.length) { $('#qcard').innerHTML = '<p>Nenhuma questão neste filtro. 🎉</p>'; renderGrid(); return; }
+  if (!vis.includes(cur)) cur = vis[0];
+  const q = Q[cur], a = ans[cur], rv = reveal(cur), pos = vis.indexOf(cur);
+  const c = $('#qcard'); c.className = 'qcard' + (rv ? ' show locked' : '');
+  c.innerHTML = `<div class="meta"><span>QUESTÃO ${cur + 1} · ${pos + 1} de ${vis.length}</span><span class="tp">${q.t}</span></div><div class="tx">${q.q}</div>` +
+    q.o.map((o, j) => `<div class="opt ${a === j ? 'pick' : ''} ${rv && j === q.a ? 'right' : ''} ${rv && a === j && j !== q.a ? 'wrong' : ''}" data-j="${j}"><span class="box"></span><span class="l">${'ABCD'[j]})</span><span>${o}</span></div>`).join('') +
+    `<div class="fb">${rv ? (a === null ? '<b>Não respondida.</b> ' : a === q.a ? '<b style="color:var(--ok)">Correto.</b> ' : `<b style="color:var(--bad)">Errado.</b> Resposta: <b>${'ABCD'[q.a]}</b>. `) + q.e : ''}</div>`;
+  c.querySelectorAll('.opt').forEach(o => o.onclick = () => choose(+o.dataset.j));
+  $('#prev').disabled = pos === 0; $('#next').textContent = pos === vis.length - 1 ? 'Fim ✓' : 'Próxima →';
+  renderGrid(); save();
+}
+function choose(j) {
+  if (mode === 'est' && ans[cur] !== null) return;
+  if (mode === 'sim' && finished) return;
+  if (mode === 'sim' && !t0) startTimer();
+  ans[cur] = j; showQ(); stats();
+  if (mode === 'sim') setTimeout(() => step(1), 250);
+}
+function step(d) { const vis = visible(), p = vis.indexOf(cur) + d; if (p >= 0 && p < vis.length) { cur = vis[p]; showQ(); $('#qcard').scrollIntoView({block: 'nearest', behavior: 'smooth'}); } }
+$('#prev').onclick = () => step(-1); $('#next').onclick = () => step(1);
+document.addEventListener('keydown', e => {
+  if (!$('#v-simulado').classList.contains('on') || /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  if (e.key === 'ArrowRight') step(1); if (e.key === 'ArrowLeft') step(-1);
+  const m = {a: 0, b: 1, c: 2, d: 3, 1: 0, 2: 1, 3: 2, 4: 3}[e.key.toLowerCase()]; if (m !== undefined) choose(m);
+});
+function renderGrid() {
+  const vis = new Set(visible());
+  $('#grid60').innerHTML = Q.map((q, k) => { const a = ans[k], rv = reveal(k);
+    const cls = a === null ? '' : rv ? (a === q.a ? 'ok' : 'no') : 'ans';
+    return `<button class="${cls} ${k === cur ? 'cur' : ''} ${vis.has(k) ? '' : 'hide'}" data-k="${k}">${k + 1}</button>`; }).join('');
+  $$('#grid60 button').forEach(b => b.onclick = () => { cur = +b.dataset.k; showQ(); });
+}
+function stats() {
+  const done = ans.filter(x => x !== null).length, ok = ans.filter((x, k) => x === Q[k].a).length;
+  $('#sDone').textContent = done; $('#sOk').textContent = mode === 'sim' && !finished ? '—' : ok;
+  $('#pBar').style.width = done / Q.length * 100 + '%'; homeStats();
+}
+function startTimer() { t0 = Date.now(); clearInterval(tick); tick = setInterval(() => { const s = Math.floor((Date.now() - t0) / 1000); $('#timer').textContent = '⏱ ' + String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }, 1000); }
+function setMode(m) {
+  if (m === mode) return;
+  if (ans.some(x => x !== null) && !confirm('Trocar de modo apaga as respostas atuais. Continuar?')) return;
+  mode = m; ans = Q.map(() => null); finished = false; t0 = null; clearInterval(tick); $('#timer').textContent = ''; cur = 0; applyMode(); showQ(); stats();
+}
+function applyMode() { $('#mEst').classList.toggle('on', mode === 'est'); $('#mSim').classList.toggle('on', mode === 'sim'); $('#bFinish').style.display = mode === 'sim' && !finished ? '' : 'none'; if (!finished) $('#result').style.display = 'none'; }
+$('#mEst').onclick = () => setMode('est'); $('#mSim').onclick = () => setMode('sim');
+$('#fTopic').onchange = showQ;
+$('#bReset').onclick = () => { if (!confirm('Apagar todas as respostas?')) return; ans = Q.map(() => null); finished = false; t0 = null; clearInterval(tick); $('#timer').textContent = ''; cur = 0; applyMode(); showQ(); stats(); };
+$('#bFinish').onclick = () => {
+  const falt = ans.filter(x => x === null).length;
+  if (falt && !confirm(`Faltam ${falt} questões. Entregar mesmo assim?`)) return;
+  finished = true; clearInterval(tick); applyMode(); showResult(); showQ(); stats();
+};
+function showResult() {
+  const ok = ans.filter((x, k) => x === Q[k].a).length;
+  const rows = TOPICS.map(t => { const ks = Q.map((_, k) => k).filter(k => Q[k].t === t), c = ks.filter(k => ans[k] === Q[k].a).length, p = Math.round(c / ks.length * 100);
+    return `<tr><td>${t}</td><td>${c}/${ks.length}</td><td class="bars"><i style="width:${Math.max(4, p)}px"></i> ${p}%</td></tr>`; }).join('');
+  $('#result').style.display = 'block';
+  $('#result').innerHTML = `<div class="kick">Resultado</div><h3>${ok}/60 · nota ${(ok / 6).toFixed(1)}</h3><p style="color:var(--muted);margin:4px 0 0">Tempo: ${$('#timer').textContent || '—'} · Agora as respostas e explicações estão liberadas. Filtre por "Só as que errei" para revisar.</p><table class="tb"><tr><th>ASSUNTO</th><th>ACERTOS</th><th>%</th></tr>${rows}</table>`;
+}
+applyMode(); if (finished) showResult(); stats();
 
-/* ===================== QUIZ ===================== */
-const Q = [
-// tipos de requisitos
-['Requisitos','"O sistema deve permitir que o cliente cancele um pedido em até 24h após a compra." é um requisito:',['Funcional','Não funcional de desempenho','Não funcional organizacional','De domínio'],0,'Descreve um serviço que o sistema oferece. O "24h" é uma regra do serviço, não uma qualidade.'],
-['Requisitos','"O sistema deve responder a 95% das buscas em até 1 segundo." é um requisito:',['Funcional','Não funcional de desempenho','Não funcional externo','Regra de negócio'],1,'Fala de quão rápido, com métrica: RNF de produto (eficiência/desempenho).'],
-['Requisitos','Segundo Sommerville, "o sistema deve ser implementado em Python e seguir o processo Scrum da empresa" é RNF:',['De produto','Organizacional','Externo','De domínio'],1,'Políticas e procedimentos da organização (linguagem, processo, padrões) = organizacionais.'],
-['Requisitos','"O sistema deve cumprir a LGPD no tratamento de dados pessoais." é um RNF:',['De produto','Organizacional','Externo (legal)','Funcional'],2,'Requisitos que vêm de fatores externos ao sistema e à organização (leis, regulamentos, ética) = externos.'],
-['Requisitos','Qual requisito é NÃO verificável e deveria ser reescrito?',['"O sistema deve ser intuitivo e rápido."','"O sistema deve gerar boleto em PDF."','"O login deve bloquear após 5 tentativas erradas."','"O relatório deve carregar em até 3 s."'],0,'"Intuitivo" e "rápido" não têm métrica: não dá para testar. Reescreva com números (tempo, taxa de erro, tarefas concluídas).'],
-['Requisitos','Requisitos de usuário e de sistema diferem porque:',['Os de usuário são em linguagem natural e alto nível; os de sistema são detalhados e precisos, base para o projeto','Os de usuário são sempre não funcionais','Os de sistema são escritos pelo cliente','Não há diferença, são sinônimos'],0,'Usuário: para clientes/gestores. Sistema: especificação detalhada para desenvolvedores, pode virar contrato.'],
-['Requisitos','"O cálculo do frete deve seguir a tabela oficial dos Correios" é melhor classificado como requisito:',['De domínio','De usabilidade','Organizacional','Inverso'],0,'Requisito de domínio: vem das características e regras da área de aplicação.'],
-['Requisitos','No FURPS+, a letra "S" significa:',['Segurança','Suportabilidade (manutenibilidade, configurabilidade)','Sistema','Software'],1,'Functionality, Usability, Reliability, Performance, Supportability + restrições.'],
-['Requisitos','Um requisito "rastreável" é aquele que:',['Tem origem conhecida e pode ser ligado a outros artefatos (casos de uso, código, testes)','Pode ser rastreado por GPS','Foi aprovado pelo cliente','Nunca muda'],0,'Rastreabilidade permite analisar impacto de mudanças: de onde veio e o que depende dele.'],
-['Requisitos','"O sistema NÃO deve armazenar o código de segurança (CVV) do cartão." é um exemplo de:',['Requisito inverso (restrição do que não deve ocorrer)','Requisito funcional de pagamento','Caso de uso','Requisito de usabilidade'],0,'Requisitos inversos dizem o que o sistema não deve fazer; normalmente ligados a segurança/legal.'],
-['Requisitos','Qual técnica de elicitação é mais adequada para descobrir como o usuário realmente trabalha (inclusive o que ele não sabe explicar)?',['Observação/etnografia','Questionário fechado','Leitura do contrato','Análise de pontos de função'],0,'Observar o trabalho no ambiente real revela tarefas implícitas que entrevistas não captam.'],
-// casos de uso
-['Casos de uso','O que é um ator em um diagrama de casos de uso?',['Um papel externo que interage com o sistema (pessoa, outro sistema, hardware ou tempo)','Um usuário específico, como "João"','Uma classe do banco de dados','Um componente interno do sistema'],0,'Ator = papel. A mesma pessoa pode desempenhar vários papéis; um sistema externo também pode ser ator.'],
-['Casos de uso','Em "Sacar dinheiro" o sistema SEMPRE precisa "Validar senha". A relação correta é:',['«include» de Sacar dinheiro para Validar senha','«extend» de Validar senha para Sacar dinheiro','«extend» de Sacar dinheiro para Validar senha','Generalização de Validar senha para Sacar dinheiro'],0,'Comportamento obrigatório e reaproveitável = include, seta saindo do caso base para o incluído.'],
-['Casos de uso','Em "Devolver livro", SOMENTE quando há atraso, o sistema executa "Calcular multa". A relação é:',['«extend», com seta de Calcular multa para Devolver livro','«include», com seta de Devolver livro para Calcular multa','«extend», com seta de Devolver livro para Calcular multa','Associação simples'],0,'Comportamento condicional = extend; a seta parte da extensão e aponta para o caso base (que tem o ponto de extensão).'],
-['Casos de uso','Sobre «extend», é correto afirmar:',['O caso base é completo sem a extensão; a extensão é inserida em um ponto de extensão sob uma condição','O caso base não funciona sem a extensão','A extensão é executada em toda execução do caso base','É representado por linha contínua com triângulo'],0,'Base independente + comportamento opcional. Linha tracejada com seta aberta e estereótipo «extend».'],
-['Casos de uso','O ator "Gerente" pode fazer tudo que o "Vendedor" faz e também "Aprovar desconto". A melhor modelagem é:',['Generalização: Gerente → Vendedor (triângulo no Vendedor) e Gerente associado a Aprovar desconto','«include» de Gerente para Vendedor','Associar o Gerente a todos os casos de uso do Vendedor e usar «extend»','Colocar o Gerente dentro da fronteira do sistema'],0,'Generalização de atores: o ator filho herda as associações do pai. O triângulo aponta para o mais geral.'],
-['Casos de uso','Qual dos itens abaixo NÃO é um bom nome de caso de uso?',['Clicar no botão Salvar','Emitir nota fiscal','Cadastrar cliente','Consultar extrato'],0,'Caso de uso é objetivo do ator com valor, não um passo/clique de interface.'],
-['Casos de uso','Na descrição de um caso de uso, "cliente autenticado no sistema" normalmente aparece como:',['Pré-condição','Pós-condição','Fluxo de exceção','Ator secundário'],0,'Pré-condição: o que precisa ser verdade antes de o caso de uso começar.'],
-['Casos de uso','"Cartão recusado pela operadora; o sistema informa o erro e encerra" é um:',['Fluxo de exceção','Fluxo principal','Pré-condição','Ponto de extensão'],0,'Exceção: situação de erro que impede o objetivo. Alternativo: variação que ainda alcança o objetivo (ex.: pagar com Pix).'],
-['Casos de uso','Um processo que gera relatórios automaticamente toda madrugada pode ter como ator:',['O Tempo (relógio/agendador)','O banco de dados','O próprio relatório','Nenhum, casos de uso sempre precisam de pessoa'],0,'O tempo é um ator clássico para eventos agendados. O banco é interno ao sistema, não é ator.'],
-['Casos de uso','No diagrama de casos de uso, a fronteira do sistema (retângulo) indica que:',['Casos de uso ficam dentro e atores ficam fora','Atores ficam dentro e casos de uso fora','Apenas atores primários ficam dentro','Indica a ordem de execução'],0,'A fronteira separa o escopo do sistema do ambiente externo.'],
-['Casos de uso','Qual afirmação sobre diagramas de casos de uso é FALSA?',['As associações mostram a ordem em que os casos de uso são executados','Mostram a visão externa do sistema','Podem ser complementados por descrições textuais','Atores podem ser outros sistemas'],0,'Diagramas de casos de uso não mostram sequência/fluxo; para isso use atividades ou sequência.'],
-// classes
-['Classes','Na notação UML, os símbolos de visibilidade + - # ~ significam, nessa ordem:',['público, privado, protegido, pacote','privado, público, pacote, protegido','público, protegido, privado, pacote','estático, abstrato, protegido, pacote'],0,'+ public, - private, # protected, ~ package.'],
-['Classes','Pedido ◆—— ItemPedido. O losango cheio indica:',['Composição: o item não existe sem o pedido, e o losango fica no lado do todo (Pedido)','Agregação: o item pode existir sem o pedido','Herança de ItemPedido para Pedido','Dependência temporária'],0,'Composição = todo-parte forte; destruir o todo destrói as partes. Losango cheio no lado do todo.'],
-['Classes','Time ◇—— Jogador (losango vazio). Isso significa que:',['É agregação: o jogador continua existindo se o time deixar de existir','É composição: o jogador some com o time','O jogador herda de Time','Time depende de Jogador só como parâmetro'],0,'Agregação = todo-parte fraco, partes independentes e possivelmente compartilhadas.'],
-['Classes','Cliente "1" —— "0..*" Pedido. A leitura correta é:',['Um cliente pode ter zero ou muitos pedidos; cada pedido pertence a exatamente um cliente','Um pedido pode ter muitos clientes','Todo cliente tem pelo menos um pedido','Cada cliente tem exatamente um pedido'],0,'A multiplicidade perto de Pedido (0..*) diz quantos pedidos um cliente tem; o 1 perto de Cliente diz quantos clientes cada pedido tem.'],
-['Classes','A multiplicidade "0..1" significa:',['Opcional: nenhum ou no máximo um','Exatamente um','Pelo menos um','Zero ou muitos'],0,'0..1 = opcional e único.'],
-['Classes','Como se representa herança (generalização) entre classes?',['Linha contínua com triângulo vazio apontando para a superclasse','Linha tracejada com seta aberta para a subclasse','Losango cheio na superclasse','Linha contínua com seta aberta para a subclasse'],0,'Triângulo vazio na ponta da classe mais geral. Tracejado + triângulo = realização de interface.'],
-['Classes','Uma classe abstrata em UML:',['Tem o nome em itálico (ou {abstract}) e não pode ser instanciada diretamente','Tem o nome sublinhado','Não pode ter atributos','Só pode ter métodos estáticos'],0,'Sublinhado indica membro estático (de classe). Classe abstrata pode ter atributos e métodos concretos.'],
-['Classes','Aluno * —— * Disciplina, e você precisa guardar a nota e a frequência de cada aluno em cada disciplina. A melhor solução é:',['Classe associativa (ex.: Matrícula) ligada à associação por linha tracejada','Colocar nota em Aluno','Colocar nota em Disciplina','Usar herança de Aluno para Disciplina'],0,'Atributos que pertencem à relação N:N vão para a classe associativa.'],
-['Classes','A relação "a classe Relatorio usa um objeto Impressora apenas como parâmetro do método imprimir()" é melhor representada por:',['Dependência (tracejada com seta aberta)','Composição','Agregação','Generalização'],0,'Dependência = relação de uso temporária, sem guardar referência como atributo.'],
-['Classes','O atributo "/idade" (com barra) em uma classe Pessoa indica que idade é:',['Derivado (calculado a partir de outro, como dataNascimento)','Privado','Estático','Opcional'],0,'A barra indica atributo derivado.'],
-['Classes','Qual é a assinatura UML correta de um método público que recebe um valor e retorna booleano?',['+ sacar(valor: double): boolean','boolean sacar(double valor) +','- sacar: boolean(valor)','sacar(valor) -> public boolean'],0,'Formato UML: visibilidade nome(parametro: Tipo): TipoRetorno.'],
-['Classes','A classe CartaoCredito implementa a interface Pagavel. A notação correta é:',['Linha tracejada com triângulo vazio apontando para «interface» Pagavel','Linha contínua com losango','Linha contínua com triângulo apontando para CartaoCredito','Associação com multiplicidade 1..*'],0,'Realização: tracejado + triângulo vazio.'],
-// estados
-['Estados','O diagrama de máquina de estados modela principalmente:',['O ciclo de vida de um objeto: estados e eventos que causam transições','A estrutura estática das classes','Quem usa o sistema e para quê','A ordem das mensagens entre objetos'],0,'Estrutura = classes; atores = casos de uso; mensagens = sequência.'],
-['Estados','Numa transição rotulada "pagar [saldo ≥ total] / emitirRecibo()", o trecho entre colchetes é:',['A guarda (condição)','O evento','A ação','O estado de destino'],0,'Formato: evento [guarda] / ação.'],
-['Estados','Se ocorre o evento de uma transição cuja guarda é falsa:',['A transição não dispara e o objeto permanece no estado atual','A transição dispara mesmo assim','O objeto vai para o estado final','Ocorre erro de modelagem obrigatório'],0,'A guarda é avaliada no momento do evento; falsa = nada acontece por aquela transição.'],
-['Estados','O estado inicial e o estado final são representados, respectivamente, por:',['Círculo preenchido; círculo preenchido dentro de um anel','Retângulo; losango','Círculo vazio; círculo preenchido','Losango; círculo preenchido'],0,'Inicial = bolinha cheia; final = "olho de boi". O losango é o pseudoestado de escolha.'],
-['Estados','Dentro de um estado, "do / tocarMusica" indica:',['Atividade contínua executada enquanto o objeto está no estado','Ação executada apenas ao entrar','Ação executada apenas ao sair','Um evento externo'],0,'entry = ao entrar; do = durante; exit = ao sair.'],
-['Estados','Qual a diferença entre autotransição e transição interna?',['A autotransição sai e volta ao estado, executando exit e entry; a interna não sai do estado','São iguais','A interna executa exit e entry; a autotransição não','Autotransição só existe em estados finais'],0,'Por isso, se o estado tem entry/exit, os dois modelos produzem comportamentos diferentes.'],
-['Estados','O pseudoestado de histórico (H) em um estado composto serve para:',['Retornar ao último subestado ativo quando o estado composto é reentrado','Registrar um log de eventos','Voltar sempre ao subestado inicial','Encerrar a máquina de estados'],0,'H = histórico raso (último subestado do nível); H* = profundo.'],
-['Estados','"after(30 min)" e "when(saldo < 0)" são, respectivamente, eventos de:',['Tempo e mudança','Chamada e sinal','Mudança e tempo','Sinal e tempo'],0,'after = passagem de tempo; when = condição que se torna verdadeira.'],
-['Estados','Um pedido está no estado "Enviado" e ocorre o evento "pagar", que não possui transição saindo de Enviado. O que acontece?',['O evento é ignorado/descartado e o pedido continua Enviado','O pedido volta para Aberto','O pedido vai para Pago','O diagrama fica inválido'],0,'Eventos sem transição definida no estado atual são simplesmente descartados.'],
-['Estados','Regiões separadas por linha tracejada dentro de um estado composto representam:',['Subestados concorrentes (ortogonais), ativos ao mesmo tempo','Estados alternativos excludentes','Transições de erro','Herança de estados'],0,'Ex.: um carro "Ligado" pode estar ao mesmo tempo em "Rádio tocando" e "Ar ligado".'],
+/* ================= VÍDEOS (render) ================= */
+const vtopics = [...new Set(VIDEOS.map(v => v.topic))];
+let vf = '';
+$('#vchips').innerHTML = ['', ...vtopics].map(t => `<button data-t="${t}" class="${t === '' ? 'on' : ''}">${t || 'Todos'}</button>`).join('');
+$$('#vchips button').forEach(b => b.onclick = () => { vf = b.dataset.t; $$('#vchips button').forEach(x => x.classList.toggle('on', x === b)); renderVideos(); });
+const ytUrl = id => 'https://www.youtube.com/watch?v=' + id;
+function renderVideos() {
+  $('#vgrid').innerHTML = VIDEOS.filter(v => !vf || v.topic === vf).map(v => `
+    <article class="vcard"><div class="player" data-id="${v.id}" role="button" aria-label="Assistir ${v.title.replace(/"/g, '')}">
+      <img loading="lazy" src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="">
+      <div class="play"><span><svg width="22" height="22" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#10170a"/></svg></span></div></div>
+      <div class="vbody"><span class="tp">${v.topic}${v.lang === 'en' ? ' · inglês' : ''}</span><h4>${v.title}</h4><span class="ch">${v.channel}</span>
+      <div class="vlinks"><a href="${ytUrl(v.id)}" target="_blank" rel="noopener">Abrir no YouTube ↗</a><button data-copy="${ytUrl(v.id)}">Copiar link</button></div></div></article>`).join('');
+  $$('.player').forEach(p => p.onclick = () => { if (p.querySelector('iframe')) return; p.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${p.dataset.id}?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="vídeo"></iframe>`; });
+  bindCopy();
+}
+$('#vlist').innerHTML = VIDEOS.map(v => `<div><span class="mono" style="color:var(--lime);font-size:11px;min-width:120px">${v.topic}</span><a href="${ytUrl(v.id)}" target="_blank" rel="noopener">${v.title}</a><span class="u">${ytUrl(v.id)}</span><button class="btn sm" data-copy="${ytUrl(v.id)}">Copiar</button></div>`).join('');
+function bindCopy() { $$('[data-copy]').forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.copy); toast('Link copiado'); } catch (e) { prompt('Copie o link:', b.dataset.copy); } }); }
+renderVideos();
+
+/* ================= DECODIFICADOR ================= */
+function decodeWord(v) {
+  const op = v & 0x7f, rd = (v >>> 7) & 31, f3 = (v >>> 12) & 7, rs1 = (v >>> 15) & 31, rs2 = (v >>> 20) & 31, f7 = v >>> 25;
+  let ins = '— (não é add/sub/xor/or/and/addi/lb/lbu/lw/sw)', fmt = '';
+  if (op === 0b0110011) { fmt = 'R'; const m = {'0-0': 'add', '0-32': 'sub', '4-0': 'xor', '6-0': 'or', '7-0': 'and'}[f3 + '-' + f7]; if (m) ins = `${m} x${rd}, x${rs1}, x${rs2}`; }
+  else if (op === 0b0010011 && f3 === 0) { fmt = 'I'; ins = `addi x${rd}, x${rs1}, ${sx(v >>> 20, 12)}`; }
+  else if (op === 0b0000011) { fmt = 'I'; const m = {0: 'lb', 4: 'lbu', 2: 'lw'}[f3]; if (m) ins = `${m} x${rd}, ${sx(v >>> 20, 12)}(x${rs1})`; }
+  else if (op === 0b0100011 && f3 === 2) { fmt = 'S'; ins = `sw x${rs2}, ${sx(((v >>> 25) << 5) | rd, 12)}(x${rs1})`; }
+  const dv = new DataView(new ArrayBuffer(4)); dv.setUint32(0, v); const fl = dv.getFloat32(0);
+  const e = (v >>> 23) & 0xff, frac = v & 0x7fffff, s = v >>> 31;
+  let fdesc, fshort;
+  if (e === 255) fshort = fdesc = frac ? 'NaN' : (s ? '−∞' : '+∞');
+  else if (e === 0) { fshort = frac ? fl.toExponential(4) : (s ? '−0' : '+0'); fdesc = frac ? 'subnormal: (−1)^s × 0,fração × 2^−126 = ' + fl.toPrecision(7) : fshort; }
+  else { fshort = fl.toFixed(6); fdesc = `${s ? '−' : '+'}1,${(frac / 2 ** 23).toFixed(6).slice(2)} × 2^${e - 127} = ${fl.toFixed(6)}`; }
+  return {op, rd, f3, rs1, rs2, f7, ins, fmt, signed: v | 0, unsigned: v, e, frac, s, fdesc, floatShort: fshort};
+}
+const PRESETS = [['A (rev. 1)', '10111111110001010010001010000011'], ['B (rev. 1)', '11000000000001010010001100000011'], ['C (rev. 1)', '00000000011000101000001110110011'], ['D (rev. 1)', '11000000011101010010001000100011'], ['sub x7,x5,x6', '0x406283B3'], ['addi x5,x0,-1', '0xFFF00293'], ['−6,75', '0xC0D80000'], ['+∞', '0x7F800000']];
+$('#presets').innerHTML = PRESETS.map(([l, v]) => `<button data-v="${v}">${l}</button>`).join('');
+$$('#presets button').forEach(b => b.onclick = () => { $('#dIn').value = b.dataset.v; decode(); });
+$('#dLab').innerHTML = Array.from({length: 32}, (_, i) => `<span>${31 - i}</span>`).join('');
+function decode() {
+  const s = $('#dIn').value.trim().replace(/[\s_]/g, ''); let v;
+  if (/^0x[0-9a-f]{1,8}$/i.test(s)) v = parseInt(s, 16) >>> 0;
+  else if (/^[01]{1,32}$/.test(s)) v = parseInt(s.padStart(32, '0'), 2) >>> 0;
+  else { $('#dOut').innerHTML = '<div><small>erro</small><span>Digite até 32 bits em binário ou um hexa como 0xBFC52283.</span></div>'; $('#dBits').innerHTML = ''; return; }
+  const d = decodeWord(v), b = v.toString(2).padStart(32, '0');
+  const cls = i => { const f = d.fmt;
+    if (f === 'R') return i >= 25 ? 'f-f7' : i >= 20 ? 'f-rs2' : i >= 15 ? 'f-rs1' : i >= 12 ? 'f-f3' : i >= 7 ? 'f-rd' : 'f-op';
+    if (f === 'I') return i >= 20 ? 'f-f7' : i >= 15 ? 'f-rs1' : i >= 12 ? 'f-f3' : i >= 7 ? 'f-rd' : 'f-op';
+    if (f === 'S') return i >= 25 ? 'f-f7' : i >= 20 ? 'f-rs2' : i >= 15 ? 'f-rs1' : i >= 12 ? 'f-f3' : i >= 7 ? 'f-f7' : 'f-op';
+    return i === 31 ? 'f-s' : i >= 23 ? 'f-e' : 'f-m'; };
+  $('#dBits').innerHTML = [...b].map((c, k) => `<span class="${cls(31 - k)}" title="bit ${31 - k}">${c}</span>`).join('');
+  $('#dOut').innerHTML = `
+    <div><small>Hexadecimal</small><span>0x${v.toString(16).toUpperCase().padStart(8, '0')}</span></div>
+    <div><small>Inteiro sem sinal</small><span>${d.unsigned.toLocaleString('pt-BR')}</span></div>
+    <div class="hl"><small>Complemento de 2</small><span>${d.signed.toLocaleString('pt-BR')}</span></div>
+    <div class="hl"><small>IEEE-754 simples</small><span>s=${d.s} · exp=${d.e} (real ${d.e - 127}) · fração=0x${d.frac.toString(16).toUpperCase()}<br>${d.fdesc}</span></div>
+    <div class="hl"><small>RISC-V · formato ${d.fmt || '?'}</small><span>${d.ins}</span></div>
+    <div><small>Campos</small><span>opcode=${d.op.toString(2).padStart(7, '0')} rd=x${d.rd}(${REG[d.rd]}) f3=${d.f3.toString(2).padStart(3, '0')} rs1=x${d.rs1} rs2=x${d.rs2} f7=${d.f7.toString(2).padStart(7, '0')}</span></div>`;
+}
+$('#dIn').addEventListener('input', decode); decode();
+$('#runSim').onclick = () => {
+  const hex = n => '0x' + (n >>> 0).toString(16).toUpperCase().padStart(8, '0');
+  const mem = {0x20000BFC: 12, 0x20000C00: -7, 0x20000C04: 0}, R = {10: 0x20001000};
+  const prog = ['BFC52283', 'C0052303', '006283B3', 'C0752223'].map(h => parseInt(h, 16) >>> 0);
+  let out = `x10 = ${hex(R[10])}\n\n`, pc = 0x00400000;
+  prog.forEach((w, i) => { const d = decodeWord(w); out += `PC=${hex(pc)}  ${'ABCD'[i]}: ${d.ins}\n`;
+    if (d.ins.startsWith('lw')) { const imm = sx(w >>> 20, 12), ad = (R[d.rs1] + imm) >>> 0; R[d.rd] = mem[ad]; out += `   endereço = ${hex(R[d.rs1])} + (${imm}) = ${hex(ad)} → x${d.rd} = ${R[d.rd]}\n`; }
+    else if (d.ins.startsWith('add')) { R[d.rd] = R[d.rs1] + R[d.rs2]; out += `   x${d.rd} = x${d.rs1} + x${d.rs2} = ${R[d.rs1]} + (${R[d.rs2]}) = ${R[d.rd]}\n`; }
+    else if (d.ins.startsWith('sw')) { const imm = sx(((w >>> 25) << 5) | d.rd, 12), ad = (R[d.rs1] + imm) >>> 0; mem[ad] = R[d.rs2]; out += `   endereço = ${hex(R[d.rs1])} + (${imm}) = ${hex(ad)} ← x${d.rs2} = ${R[d.rs2]}\n`; }
+    pc += 4; });
+  out += `\nFinal: x5 = ${R[5]}, x6 = ${R[6]}, x7 = ${R[7]}, mem[0x20000C04] = ${mem[0x20000C04]}`;
+  $('#simOut').textContent = out;
+};
+
+/* ================= MEMÓRIA ================= */
+const SEGS = [
+ ['Kernel', 'endereços altos', 'Espaço do kernel', 'Reservado ao sistema operacional. Um programa em modo usuário que tenta acessar essa área leva <b>Segmentation fault</b>.', ''],
+ ['STACK', 'cresce ↓', 'Pilha', 'Variáveis locais automáticas, parâmetros, endereço de retorno e registradores salvos: um <b>stack frame</b> por chamada, descartado no retorno. Sem inicializador, o valor é indeterminado (lixo).', 'int qtd_medicoes;   char stop;\ndouble *medicoes;   // o PONTEIRO\nresultado_t resultado = {0};\nint i;  double temp;'],
+ ['HEAP', 'cresce ↑', 'Heap', 'Memória pedida em tempo de execução com <code>malloc</code>, <code>calloc</code> e <code>realloc</code>. Dura até o <code>free</code>; se não liberar, há vazamento. Ideal quando o tamanho só é conhecido durante a execução.', 'malloc(sizeof(*medicoes) * n);  // os n doubles\nfree(medicoes); medicoes = NULL;'],
+ ['BSS', 'zerada pelo SO', 'BSS', 'Duração estática <b>sem</b> inicializador ou inicializada com <b>0</b>. O executável guarda só o tamanho, e o SO entrega páginas zeradas. Por isso <code>int v[1000000] = {0};</code> não aumenta o arquivo.', 'int total_alertas;\ndouble soma_temperaturas;\nstatic int total_analises = 0;  // local, mas BSS'],
+ ['DATA', 'leitura e escrita', 'DATA (RW)', 'Duração estática com inicializador <b>diferente de zero</b>. O valor inicial vem gravado no executável e pode ser alterado durante a execução.', 'double correcao_sensor = 0.5;\nstatic int x = 5;   // local static ≠ 0'],
+ ['RODATA', 'só leitura', 'DATA RO (.rodata)', 'Constantes de duração estática e literais de string. Mudar direto no código dá erro de compilação. Mudar via cast compila, mas a página é só leitura e o SO gera <b>segfault</b>.', 'double const limites_temperatura[2] = {2.0, 8.0};\n"=== RELATÓRIO ===\\n"'],
+ ['TEXT', 'leitura + execução', 'TEXT (código)', 'Instruções de máquina de todas as funções. O PC aponta para cá. Uma chamada não copia o código: só salva o retorno em <code>ra</code> e muda o PC.', 'main()  registrar_temperaturas()\nanalisar_temperaturas()  exibir_relatorio()'],
 ];
-let qa = Q.map(() => null);
-let sd = 99; const rq = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
-Q.forEach(q => { const p = q[2].map((_, i) => i).sort(() => rq() - .5); q[2] = p.map(i => q[2][i]); q[3] = p.indexOf(q[3]); });
-const QT = [...new Set(Q.map(q => q[0]))];
-$('#qFil').innerHTML = '<option value="">Todos (' + Q.length + ')</option>' + QT.map(t => `<option>${t}</option>`).join('');
-function rQuiz(onlyWrong) {
-  const f = $('#qFil').value, L = $('#qList'); L.innerHTML = '';
-  Q.forEach(([t, tx, o, a, ex], k) => {
-    if (f && t !== f) return; if (onlyWrong && (qa[k] === null || qa[k] === a)) return;
-    if (onlyWrong) qa[k] = null;
-    const d = document.createElement('div'); d.className = 'q';
-    d.innerHTML = `<div class="meta"><span>QUESTÃO ${k + 1}</span><span>${t.toUpperCase()}</span></div><div class="tx">${tx}</div>` + o.map((s, j) => `<div class="opt" data-j="${j}"><span class="x"></span><b>${'ABCD'[j]})</b><span>${s}</span></div>`).join('') + '<div class="fb"></div>';
-    const paint = () => {
-      const j = qa[k]; const show = PRINT || j !== null; d.classList.toggle('done', show);
-      d.querySelectorAll('.opt').forEach(op => { const jj = +op.dataset.j; op.classList.toggle('pick', !PRINT && jj === j); op.classList.toggle('right', show && jj === a); op.classList.toggle('wrong', !PRINT && show && jj === j && j !== a); });
-      if (show) d.querySelector('.fb').innerHTML = (PRINT ? `<b>Resposta: ${'ABCD'[a]}.</b> ` : j === a ? '<b style="color:var(--ok)">Correto!</b> ' : `<b style="color:var(--bad)">Errado.</b> Resposta: <b>${'ABCD'[a]}</b>. `) + ex;
-    };
-    d.querySelectorAll('.opt').forEach(op => op.onclick = () => { if (qa[k] !== null || PRINT) return; qa[k] = +op.dataset.j; paint(); score(); });
-    paint(); L.appendChild(d);
-  });
-  score();
-}
-function score() {
-  const done = qa.filter(x => x !== null).length, ok = qa.filter((x, k) => x === Q[k][3]).length;
-  $('#qOk').textContent = ok; $('#qDone').textContent = done; $('#qPb').style.width = done / Q.length * 100 + '%';
-  $('#chips').innerHTML = `<span class="chip">${Q.length} questões de marcar X</span><span class="chip">${EX.length - 1} diagramas para montar + modo livre</span><span class="chip">${CL.length} requisitos para classificar</span><span class="chip">Acertos: ${ok}/${done}</span>`;
-}
-$('#qFil').onchange = () => rQuiz(); $('#qReset').onclick = () => { qa = Q.map(() => null); rQuiz(); }; $('#qWrong').onclick = () => rQuiz(true);
-rQuiz();
+$('#segs').innerHTML = SEGS.map((s, k) => `<div class="segm" data-k="${k}"><b>${s[0]}</b><small>${s[1]}</small></div>` + (k === 1 ? '<div class="gap">↓ espaço livre ↑</div>' : '')).join('') + '<div class="gap">endereços baixos</div>';
+$$('.segm').forEach(el => el.onclick = () => { $$('.segm').forEach(x => x.classList.remove('on')); el.classList.add('on'); const s = SEGS[el.dataset.k];
+  $('#segInfo').innerHTML = `<div class="kick">${s[1]}</div><h4>${s[2]}</h4><p style="color:#cdd5e3">${s[3]}</p>${s[4] ? `<pre><code>${s[4].replace(/</g, '&lt;')}</code></pre>` : ''}`; });
+$$('.segm')[1].click();
+
+route();
 </script>
 </body>
 </html>
